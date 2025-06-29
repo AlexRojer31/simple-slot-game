@@ -6,5 +6,5 @@ import { Application } from "pixi.js";
     background: "#1099bb",
     resizeTo: window,
   });
-  document.getElementById("pixi-container")!.appendChild(app.canvas);
+  document.getElementById("pixi-container")!.appendChild(app.canvas); 
 })();
