@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "assets": "assetpack",
-    "start": "npm run dev",
-    "build": "npm run lint && webpack --mode=production",
+    "start": "npm run assets && npm run dev",
+    "build": "npm run assets && npm run lint && webpack --mode=production",
     "lint": "eslint .",
-    "dev": "npm run assets && webpack serve --mode=development"
+    "dev": "webpack serve --mode=development"
   },
   "dependencies": {
     "@pixi/utils": "^7.4.3",
