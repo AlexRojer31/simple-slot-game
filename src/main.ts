@@ -4,6 +4,7 @@ import {
   AssetsBundle,
   AssetsManifest,
   Sprite,
+  Spritesheet,
 } from "pixi.js";
 import * as utils from "@pixi/utils";
 
@@ -39,4 +40,10 @@ import * as utils from "@pixi/utils";
   const commonAssets = await Assets.loadBundle("common");
   const logo: Sprite = Sprite.from(commonAssets.logo);
   app.stage.addChild(logo);
+
+  const texturesAssets = await Assets.loadBundle("textures");
+  const snow: Sprite = Sprite.from(texturesAssets.water.textures.ice);
+  snow.position.set(300, 0);
+  snow.texture = texturesAssets.earth.textures.lava;
+  app.stage.addChild(snow);
 })();
