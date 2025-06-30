@@ -4,9 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "assets": "assetpack",
-    "start": "npm run assets && npm run dev",
-    "build": "npm run assets && npm run lint && tsc && vite build",
+    "start": "npm run dev",
+    "build": "npm run lint && tsc && vite build",
     "lint": "eslint .",
     "dev": "vite"
   },

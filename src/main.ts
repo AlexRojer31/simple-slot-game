@@ -1,4 +1,10 @@
-import { Application, Assets, AssetsManifest } from "pixi.js";
+import {
+  Application,
+  Assets,
+  AssetsBundle,
+  AssetsManifest,
+  Sprite,
+} from "pixi.js";
 import * as utils from "@pixi/utils";
 
 (async () => {
@@ -26,5 +32,11 @@ import * as utils from "@pixi/utils";
     manifest,
     texturePreference: { resolution: [resolution, 1], format: ["webp", "png"] },
   });
-  Assets.backgroundLoadBundle(["common"]);
+  Assets.backgroundLoadBundle(
+    manifest.bundles.map((b: AssetsBundle) => b.name),
+  );
+
+  const commonAssets = await Assets.loadBundle("common");
+  const logo: Sprite = Sprite.from(commonAssets.logo);
+  app.stage.addChild(logo);
 })();
