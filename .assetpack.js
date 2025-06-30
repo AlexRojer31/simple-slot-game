@@ -1,7 +1,7 @@
 import { pixiPipes } from '@assetpack/core/pixi';
 
 export default {
-    entry: './raw-assets',
+    entry: './assets',
     output: './public/assets',
     pipes: [
         ...pixiPipes({
