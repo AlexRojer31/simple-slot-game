@@ -7,6 +7,10 @@ import {
 } from "pixi.js";
 import * as utils from "@pixi/utils";
 
+enum STATES {
+  idle = 0,
+  rotation,
+}
 (async () => {
   const app = new Application();
   await app.init({
@@ -49,20 +53,45 @@ import * as utils from "@pixi/utils";
   rect.rotation = degInRad(0);
   app.stage.addChild(rect);
 
+  let rotate: number = 0;
+  let rectState: number = STATES.idle;
   window.addEventListener("click", (e: MouseEvent) => {
     const catetX = e.clientX - rect.x;
     const catetY = e.clientY - rect.y;
     const hipotenuza = Math.sqrt(catetX * catetX + catetY * catetY);
     const corner = Math.floor((Math.asin(catetY / hipotenuza) * 180) / Math.PI);
-    let rotate = 0;
     if (catetX > 0) {
       rotate = 360 + corner > 360 ? 0 + corner : 360 + corner;
     } else {
       rotate = 180 - corner;
     }
-    console.log((rect.rotation * 180) / Math.PI);
-    rect.rotation = degInRad(rotate);
+    if (rotate == 360) {
+      rotate = 0;
+    }
+    rectState = STATES.rotation;
   });
+
+  app.ticker.add(() => {
+    switch (rectState) {
+      case STATES.idle:
+        break;
+      case STATES.rotation: {
+        let deg: number = (rect.rotation * 180) / Math.PI;
+        if (deg != rotate) {
+          if (deg == 360) {
+            deg = 0;
+          }
+          rect.rotation = degInRad(deg + 1);
+        }
+        if (deg == rotate) {
+          rectState = STATES.idle;
+        }
+      }
+    }
+  });
+
+  // rect.rotation = degInRad(rotate);
+
   // const rad: number = Math.PI / 180;
   // const packman: Graphics = new Graphics()
   //   .arc(0, 0, 50, rad * 30, 320 * rad)
