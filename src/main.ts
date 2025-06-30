@@ -1,11 +1,4 @@
-import {
-  Application,
-  Assets,
-  AssetsBundle,
-  AssetsManifest,
-  Sprite,
-  Spritesheet,
-} from "pixi.js";
+import { Application, Assets, AssetsBundle, AssetsManifest } from "pixi.js";
 import * as utils from "@pixi/utils";
 
 (async () => {
@@ -37,13 +30,36 @@ import * as utils from "@pixi/utils";
     manifest.bundles.map((b: AssetsBundle) => b.name),
   );
 
-  const commonAssets = await Assets.loadBundle("common");
-  const logo: Sprite = Sprite.from(commonAssets.logo);
-  app.stage.addChild(logo);
+  // const starCount = 50;
+  // const graphics = new Graphics();
+  // for (let index = 0; index < starCount; index++) {
+  //   const x = (index * 0.78695 * app.screen.width) % app.screen.width;
+  //   const y = (index * 0.9382 * app.screen.height) % app.screen.height;
+  //   const radius = 2 + Math.random() * 3;
+  //   const rotation = Math.random() * Math.PI * 2;
 
-  const texturesAssets = await Assets.loadBundle("textures");
-  const snow: Sprite = Sprite.from(texturesAssets.water.textures.ice);
-  snow.position.set(300, 0);
-  snow.texture = texturesAssets.earth.textures.lava;
-  app.stage.addChild(snow);
+  //   graphics
+  //     .star(x, y, 5, radius, 0, rotation)
+  //     .fill({ color: 0xffdf00, alpha: radius / 5 });
+  // }
+
+  // app.stage.addChild(graphics);
+
+  // const commonAssets = await Assets.loadBundle("backgrounds");
+  // const mountain: Sprite = Sprite.from(commonAssets.mountain);
+  // mountain.width = app.screen.width;
+  // mountain.height = (app.screen.height * 2) / 3;
+  // mountain.position.set(0, 400);
+  // app.stage.addChild(mountain);
+
+  // const moon: Sprite = Sprite.from(commonAssets.moon);
+  // moon.tint = 0xff0000;
+  // moon.position.set(30, 30);
+  // app.stage.addChild(moon);
+
+  // const texturesAssets = await Assets.loadBundle("textures");
+  // const snow: Sprite = Sprite.from(texturesAssets.water.textures.ice);
+  // snow.position.set(300, 0);
+  // snow.texture = texturesAssets.earth.textures.lava;
+  // app.stage.addChild(snow);
 })();
