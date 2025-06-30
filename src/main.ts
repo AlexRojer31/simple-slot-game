@@ -1,4 +1,10 @@
-import { Application, Assets, AssetsBundle, AssetsManifest } from "pixi.js";
+import {
+  Application,
+  Assets,
+  AssetsBundle,
+  AssetsManifest,
+  Graphics,
+} from "pixi.js";
 import * as utils from "@pixi/utils";
 
 (async () => {
@@ -29,6 +35,20 @@ import * as utils from "@pixi/utils";
   Assets.backgroundLoadBundle(
     manifest.bundles.map((b: AssetsBundle) => b.name),
   );
+
+  const rad: number = Math.PI / 180;
+  const packman: Graphics = new Graphics()
+    .arc(0, 0, 50, rad * 30, 320 * rad)
+    .stroke({
+      width: 100,
+      color: 0xffff00,
+    })
+    .circle(-30, -30, 20)
+    .fill({ color: 0x000000 })
+    .cut();
+
+  packman.position.set(150);
+  app.stage.addChild(packman);
 })();
 
 // async function testLoads(app: Application): void {
