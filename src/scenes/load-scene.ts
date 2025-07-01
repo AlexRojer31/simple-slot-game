@@ -2,6 +2,7 @@ import { Assets, Container, Sprite } from "pixi.js";
 import { app } from "../app";
 import { Emitter } from "../core/event-emitter/event-emitter";
 import { BundleLoadedEvent } from "../core/event-emitter/custom-events/bundle-loaded-event";
+import { ShowLoadedSceneEvent } from "../core/event-emitter/custom-events/show-loaded-scene-event";
 
 export class LoadScene extends Container {
   private mountain!: Sprite;
@@ -9,15 +10,15 @@ export class LoadScene extends Container {
 
   constructor() {
     super();
+    this.subscribes();
     const result: Promise<void> = this.loadSecond();
     result.then(() => {
+      this.addChild(this.mountain, this.moon);
+
       Emitter().emit(
         BundleLoadedEvent.NAME,
         new BundleLoadedEvent({ bandleName: "backgrounds" }),
       );
-
-      this.addChild(this.mountain, this.moon);
-      app().stage.addChild(this);
     });
   }
 
@@ -31,5 +32,11 @@ export class LoadScene extends Container {
     this.moon = Sprite.from(commonAssets.moon);
     this.moon.tint = 0xff0000;
     this.moon.position.set(30, 30);
+  }
+
+  private subscribes(): void {
+    Emitter().addListener(ShowLoadedSceneEvent.NAME, () => {
+      app().stage.addChild(this);
+    });
   }
 }
