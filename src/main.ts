@@ -58,7 +58,7 @@ enum STATES {
   window.addEventListener("click", (e: MouseEvent) => {
     const catetX = e.clientX - rect.x;
     const catetY = e.clientY - rect.y;
-    const hipotenuza = Math.sqrt(catetX * catetX + catetY * catetY);
+    const hipotenuza = Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2));
     const corner = Math.floor((Math.asin(catetY / hipotenuza) * 180) / Math.PI);
     if (catetX > 0) {
       rotate = 360 + corner > 360 ? 0 + corner : 360 + corner;
@@ -76,11 +76,11 @@ enum STATES {
       case STATES.idle:
         break;
       case STATES.rotation: {
-        let deg: number = (rect.rotation * 180) / Math.PI;
-        if (deg != rotate) {
-          if (deg == 360) {
-            deg = 0;
-          }
+        const deg: number = (rect.rotation * 180) / Math.PI;
+        if (deg > rotate) {
+          rect.rotation = degInRad(deg - 1);
+        }
+        if (deg < rotate) {
           rect.rotation = degInRad(deg + 1);
         }
         if (deg == rotate) {
