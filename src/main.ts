@@ -2,6 +2,9 @@ import { Assets, AssetsBundle, AssetsManifest } from "pixi.js";
 import * as utils from "@pixi/utils";
 import { PackmanEaterScene } from "./scenes/packman-eater-scene";
 import { app, INIT_APP } from "./app";
+import { Emitter } from "./event-emitter/event-emitter";
+import { BundleLoadedEvent } from "./event-emitter/custom-events/bundle-loaded-event";
+import { LoadScene } from "./scenes/load-scene";
 
 (async () => {
   INIT_APP();
@@ -33,10 +36,18 @@ import { app, INIT_APP } from "./app";
   );
 
   const scene: PackmanEaterScene = new PackmanEaterScene();
-  app().stage.addChild(scene);
+  new LoadScene();
+
+  Emitter().addListener(BundleLoadedEvent.NAME, (e: BundleLoadedEvent) => {
+    if (e.data.bandleName == "backgrounds") {
+      setTimeout(() => {
+        scene.destroy();
+      }, 1000);
+    }
+  });
 })();
 
-// async function testLoads(app: Application): void {
+// async function testLoads(app: Application): Promise<void> {
 //   const starCount = 50;
 //   const graphics = new Graphics();
 //   for (let index = 0; index < starCount; index++) {

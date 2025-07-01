@@ -15,6 +15,7 @@ export class PackmanEaterScene extends Container {
     this.generateStars();
     this.generatePackman();
 
+    app().stage.addChild(this);
     app().ticker.add(() => {
       this.animate();
     });
