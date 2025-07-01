@@ -14,7 +14,7 @@ interface IPackmanSettings {
   height: number;
 }
 
-export class Packman extends Container {
+export class PackmanComponent extends Container {
   private graphicPackman!: Graphics;
   private eatingCounter: number = 0;
   private rotate: number = 0;

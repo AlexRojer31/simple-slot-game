@@ -1,6 +1,6 @@
 import { Container, Graphics } from "pixi.js";
 
-export class Star extends Container {
+export class StarComponent extends Container {
   private graphicStar!: Graphics;
   private starX: number = 0;
   private starY: number = 0;

@@ -1,10 +1,10 @@
 import { Application, Container } from "pixi.js";
-import { Star } from "../components/star";
-import { Packman } from "../components/packman";
+import { StarComponent } from "../components/star-component";
+import { PackmanComponent } from "../components/packman-component";
 
 export class PackmanEaterScene extends Container {
-  private stars: Star[] = [];
-  private packman!: Packman;
+  private stars: StarComponent[] = [];
+  private packman!: PackmanComponent;
   private app!: Application;
 
   constructor(app: Application) {
@@ -27,7 +27,7 @@ export class PackmanEaterScene extends Container {
   }
 
   private generatePackman(): void {
-    this.packman = new Packman({
+    this.packman = new PackmanComponent({
       x: this.app.screen.width / 2,
       y: this.app.screen.height / 2,
       width: 50,
@@ -44,7 +44,7 @@ export class PackmanEaterScene extends Container {
       const y =
         (index * Math.random() * this.app.screen.height) %
         this.app.screen.height;
-      const star = new Star(x, y);
+      const star = new StarComponent(x, y);
       this.stars.push(star);
       this.addChild(star);
     }
@@ -53,7 +53,7 @@ export class PackmanEaterScene extends Container {
   private animate(): void {
     this.packman.eating();
     this.packman.mooving();
-    this.stars.forEach((s: Star) => {
+    this.stars.forEach((s: StarComponent) => {
       if (this.packman.contains(s.getStarX(), s.getStarY())) {
         s.destroyStar();
       }
