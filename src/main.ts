@@ -66,78 +66,8 @@ import { Packman } from "./components/packman";
     newPack.mooving();
   });
 
-  // const packman: Graphics = new Graphics()
-  //   .arc(0, 0, 50, degInRad(30), degInRad(320))
-  //   .stroke({
-  //     width: 100,
-  //     color: 0xffff00,
-  //   })
-  //   .circle(-30, -30, 20)
-  //   .fill({ color: 0x000000 })
-  //   .cut();
-  // packman.position.set(app.screen.width / 2, app.screen.height / 2);
-  // app.stage.addChild(packman);
-
-  // let rotate: number = 0;
-  // const currentPoint: Point = new Point();
-  // const pointToMove: Point = new Point();
-  // const packmanStates: number[] = [];
-  // window.addEventListener("click", move);
-
-  // function move(e: MouseEvent) {
-  //   const catetX = e.clientX - packman.x;
-  //   const catetY = e.clientY - packman.y;
-  //   const corner = Math.floor(
-  //     (Math.asin(
-  //       catetY / Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
-  //     ) *
-  //       180) /
-  //       Math.PI,
-  //   );
-  //   if (catetX > 0) {
-  //     rotate = 360 + corner > 360 ? 0 + corner : 360 + corner;
-  //   } else {
-  //     rotate = 180 - corner;
-  //   }
-  //   if (rotate == 360) {
-  //     rotate = 0;
-  //   }
-  //   pointToMove.x = e.clientX;
-  //   pointToMove.y = e.clientY;
-  //   currentPoint.x = packman.x;
-  //   currentPoint.y = packman.y;
-  //   packmanStates.push(STATES.rotation);
-  //   packmanStates.push(STATES.move);
-  //   packmanStates.push(STATES.idle);
-  //   window.removeEventListener("click", move);
-  // }
-
   // let counter: number = 0;
   // app.ticker.add(() => {
-  //   newPack.eating();
-  //   if (counter > 100000) {
-  //     counter = 0;
-  //   } else {
-  //     counter += 0.1;
-  //   }
-
-  //   packman
-  //     .clear()
-  //     .arc(
-  //       0,
-  //       0,
-  //       50,
-  //       degInRad(30 - Math.abs(Math.sin(counter) * 30)),
-  //       degInRad(320 + Math.abs(Math.sin(counter) * 30)),
-  //     )
-  //     .stroke({
-  //       width: 100,
-  //       color: 0xffff00,
-  //     })
-  //     .circle(-30, -30, 20)
-  //     .fill({ color: 0x000000 })
-  //     .cut();
-
   //   if (packmanStates.length > 0) {
   //     switch (packmanStates[0]) {
   //       case STATES.idle: {

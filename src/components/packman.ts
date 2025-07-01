@@ -1,11 +1,11 @@
 import { Container, FederatedPointerEvent, Graphics, Point } from "pixi.js";
 import { DEG_TO_RAD, GET_CORNER } from "../utils/functions";
 
-// enum STATES {
-//   idle = 0,
-//   rotation,
-//   move,
-// }
+enum STATES {
+  idle = 0,
+  rotation,
+  move,
+}
 
 interface IPackmanSettings {
   x: number;
@@ -20,7 +20,7 @@ export class Packman extends Container {
   private rotate: number = 0;
   private currentPoint: Point = new Point();
   private pointToMove: Point = new Point();
-  //   private packmanStates: number[] = [];
+  private statesSteps: number[] = [];
 
   constructor(settings: IPackmanSettings) {
     super();
@@ -48,6 +48,9 @@ export class Packman extends Container {
     this.currentPoint.y = this.y;
     this.rotate = GET_CORNER(this.pointToMove, this.currentPoint);
 
+    this.statesSteps.push(STATES.rotation);
+    this.statesSteps.push(STATES.move);
+    this.statesSteps.push(STATES.idle);
     this.graphicPackman.rotation = DEG_TO_RAD(this.rotate);
     this.position.set(this.pointToMove.x, this.pointToMove.y);
   }
@@ -78,34 +81,4 @@ export class Packman extends Container {
   }
 
   public mooving(): void {}
-
-  //   public move(e: MouseEvent) {
-  //     const catetX = e.clientX - this.graphicPackman.x;
-  //     const catetY = e.clientY - this.graphicPackman.y;
-  //     const corner = Math.floor(
-  //       (Math.asin(
-  //         catetY / Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
-  //       ) *
-  //         180) /
-  //         Math.PI,
-  //     );
-  //     if (catetX > 0) {
-  //       this.rotate = 360 + corner > 360 ? 0 + corner : 360 + corner;
-  //     } else {
-  //       this.rotate = 180 - corner;
-  //     }
-  //     if (this.rotate == 360) {
-  //       this.rotate = 0;
-  //     }
-  //     this.pointToMove.x = e.clientX;
-  //     this.pointToMove.y = e.clientY;
-  //     this.currentPoint.x = packman.x;
-  //     this.currentPoint.y = packman.y;
-  //     this.packmanStates.push(STATES.rotation);
-  //     this.packmanStates.push(STATES.move);
-  //     this.packmanStates.push(STATES.idle);
-  //     window.removeEventListener("click", this.move);
-  //   }
-
-  //   public animateMove() {}
 }
