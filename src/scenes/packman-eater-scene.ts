@@ -2,6 +2,8 @@ import { Container } from "pixi.js";
 import { StarComponent } from "../components/star-component";
 import { PackmanComponent } from "../components/packman-component";
 import { app } from "../app";
+import { Emitter } from "../core/event-emitter/event-emitter";
+import { BundleLoadedEvent } from "../core/event-emitter/custom-events/bundle-loaded-event";
 
 export class PackmanEaterScene extends Container {
   private stars: StarComponent[] = [];
@@ -9,6 +11,7 @@ export class PackmanEaterScene extends Container {
 
   constructor() {
     super();
+    this.subscribe();
     this.eventMode = "static";
     this.hitArea = app().screen;
 
@@ -18,6 +21,16 @@ export class PackmanEaterScene extends Container {
     app().stage.addChild(this);
     app().ticker.add(() => {
       this.animate();
+    });
+  }
+
+  private subscribe(): void {
+    Emitter().addListener(BundleLoadedEvent.NAME, (e: BundleLoadedEvent) => {
+      if (e.data.bandleName == "backgrounds") {
+        setTimeout(() => {
+          this.destroy();
+        }, 3000);
+      }
     });
   }
 

@@ -2,8 +2,6 @@ import { Assets, AssetsBundle, AssetsManifest } from "pixi.js";
 import * as utils from "@pixi/utils";
 import { PackmanEaterScene } from "./scenes/packman-eater-scene";
 import { app, INIT_APP } from "./app";
-import { Emitter } from "./core/event-emitter/event-emitter";
-import { BundleLoadedEvent } from "./core/event-emitter/custom-events/bundle-loaded-event";
 import { LoadScene } from "./scenes/load-scene";
 
 (async () => {
@@ -35,16 +33,8 @@ import { LoadScene } from "./scenes/load-scene";
     manifest.bundles.map((b: AssetsBundle) => b.name),
   );
 
-  const scene: PackmanEaterScene = new PackmanEaterScene();
+  new PackmanEaterScene();
   new LoadScene();
-
-  Emitter().addListener(BundleLoadedEvent.NAME, (e: BundleLoadedEvent) => {
-    if (e.data.bandleName == "backgrounds") {
-      setTimeout(() => {
-        scene.destroy();
-      }, 1000);
-    }
-  });
 })();
 
 // async function testLoads(app: Application): Promise<void> {

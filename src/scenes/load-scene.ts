@@ -4,7 +4,6 @@ import { Emitter } from "../core/event-emitter/event-emitter";
 import { BundleLoadedEvent } from "../core/event-emitter/custom-events/bundle-loaded-event";
 
 export class LoadScene extends Container {
-  private assetsCounter: number = 0;
   private mountain!: Sprite;
   private moon!: Sprite;
   private graphics!: Graphics;
@@ -14,15 +13,13 @@ export class LoadScene extends Container {
     this.loadFerst();
     const result: Promise<void> = this.loadSecond();
     result.then(() => {
-      if (this.assetsCounter == 2) {
-        Emitter().emit(
-          BundleLoadedEvent.NAME,
-          new BundleLoadedEvent({ bandleName: "backgrounds" }),
-        );
+      Emitter().emit(
+        BundleLoadedEvent.NAME,
+        new BundleLoadedEvent({ bandleName: "backgrounds" }),
+      );
 
-        this.addChild(this.graphics, this.mountain, this.moon);
-        app().stage.addChild(this);
-      }
+      this.addChild(this.graphics, this.mountain, this.moon);
+      app().stage.addChild(this);
     });
   }
 
@@ -38,8 +35,6 @@ export class LoadScene extends Container {
         .star(x, y, 5, radius, 0, rotation)
         .fill({ color: 0xffdf00, alpha: radius / 5 });
     }
-
-    this.assetsCounter++;
   }
 
   private async loadSecond(): Promise<void> {
@@ -51,6 +46,5 @@ export class LoadScene extends Container {
     this.moon = Sprite.from(commonAssets.moon);
     this.moon.tint = 0xff0000;
     this.moon.position.set(30, 30);
-    this.assetsCounter++;
   }
 }
