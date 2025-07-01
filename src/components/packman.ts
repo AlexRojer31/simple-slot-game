@@ -45,10 +45,14 @@ export class Packman extends Container {
     this.graphicPackman.rotation = DEG_TO_RAD(deg);
   }
 
-  public rotating(e: FederatedPointerEvent): void {
-    this.rotate(
-      GET_CORNER(new Point(e.clientX, e.clientY), new Point(this.x, this.y)),
-    );
+  public move(pointToMove: Point): void {
+    this.position.set(pointToMove.x, pointToMove.y);
+  }
+
+  public animate(e: FederatedPointerEvent): void {
+    const pointToMove: Point = new Point(e.clientX, e.clientY);
+    this.rotate(GET_CORNER(pointToMove, new Point(this.x, this.y)));
+    this.move(pointToMove);
   }
 
   public eating(): void {

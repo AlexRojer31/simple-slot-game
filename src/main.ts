@@ -58,7 +58,7 @@ import { Packman } from "./components/packman";
   });
   scene.addChild(newPack);
 
-  scene.on("pointerdown", newPack.rotating, newPack);
+  scene.on("pointerdown", newPack.animate, newPack);
 
   app.stage.addChild(scene);
   app.ticker.add(() => {
