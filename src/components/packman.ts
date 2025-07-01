@@ -51,8 +51,6 @@ export class Packman extends Container {
     this.statesSteps.push(STATES.rotation);
     this.statesSteps.push(STATES.move);
     this.statesSteps.push(STATES.idle);
-    this.graphicPackman.rotation = DEG_TO_RAD(this.rotate);
-    this.position.set(this.pointToMove.x, this.pointToMove.y);
   }
 
   public eating(): void {
@@ -80,5 +78,49 @@ export class Packman extends Container {
       .cut();
   }
 
-  public mooving(): void {}
+  public mooving(): void {
+    if (this.statesSteps.length > 0) {
+      switch (this.statesSteps[0]) {
+        case STATES.idle: {
+          this.statesSteps.shift();
+          break;
+        }
+        case STATES.move: {
+          const stepX: number =
+            this.currentPoint.x > this.pointToMove.x ? -1 : 1;
+          this.currentPoint.x += stepX;
+          const stepY: number =
+            this.currentPoint.y > this.pointToMove.y ? -1 : 1;
+          this.currentPoint.y += stepY;
+          if (this.currentPoint.x != this.pointToMove.x) {
+            this.position.set(this.currentPoint.x, this.position.y);
+          }
+          if (this.currentPoint.y != this.pointToMove.y) {
+            this.position.set(this.position.x, this.currentPoint.y);
+          }
+          if (
+            this.position.x + 10 > this.pointToMove.x &&
+            this.position.x - 10 < this.pointToMove.x &&
+            this.position.y + 10 > this.pointToMove.y &&
+            this.position.y - 10 < this.pointToMove.y
+          ) {
+            this.statesSteps.shift();
+          }
+          break;
+        }
+        case STATES.rotation: {
+          const deg: number = (this.graphicPackman.rotation * 180) / Math.PI;
+          if (deg > this.rotate) {
+            this.graphicPackman.rotation = DEG_TO_RAD(deg - 1);
+          }
+          if (deg < this.rotate) {
+            this.graphicPackman.rotation = DEG_TO_RAD(deg + 1);
+          }
+          if (deg + 1 > this.rotate && deg - 1 < this.rotate) {
+            this.statesSteps.shift();
+          }
+        }
+      }
+    }
+  }
 }

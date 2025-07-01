@@ -65,52 +65,6 @@ import { Packman } from "./components/packman";
     newPack.eating();
     newPack.mooving();
   });
-
-  // let counter: number = 0;
-  // app.ticker.add(() => {
-  //   if (packmanStates.length > 0) {
-  //     switch (packmanStates[0]) {
-  //       case STATES.idle: {
-  //         window.addEventListener("click", move);
-  //         packmanStates.shift();
-  //         break;
-  //       }
-  //       case STATES.move: {
-  //         const stepX: number = currentPoint.x > pointToMove.x ? -1 : 1;
-  //         currentPoint.x += stepX;
-  //         const stepY: number = currentPoint.y > pointToMove.y ? -1 : 1;
-  //         currentPoint.y += stepY;
-  //         if (currentPoint.x != pointToMove.x) {
-  //           packman.position.set(currentPoint.x, packman.position.y);
-  //         }
-  //         if (currentPoint.y != pointToMove.y) {
-  //           packman.position.set(packman.position.x, currentPoint.y);
-  //         }
-  //         if (
-  //           packman.position.x + 10 > pointToMove.x &&
-  //           packman.position.x - 10 < pointToMove.x &&
-  //           packman.position.y + 10 > pointToMove.y &&
-  //           packman.position.y - 10 < pointToMove.y
-  //         ) {
-  //           packmanStates.shift();
-  //         }
-  //         break;
-  //       }
-  //       case STATES.rotation: {
-  //         const deg: number = (packman.rotation * 180) / Math.PI;
-  //         if (deg > rotate) {
-  //           packman.rotation = degInRad(deg - 1);
-  //         }
-  //         if (deg < rotate) {
-  //           packman.rotation = degInRad(deg + 1);
-  //         }
-  //         if (deg + 1 > rotate && deg - 1 < rotate) {
-  //           packmanStates.shift();
-  //         }
-  //       }
-  //     }
-  //   }
-  // });
 })();
 
 // async function testLoads(app: Application): void {
