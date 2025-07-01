@@ -1,13 +1,6 @@
-import {
-  Application,
-  Assets,
-  AssetsBundle,
-  AssetsManifest,
-  Container,
-} from "pixi.js";
+import { Application, Assets, AssetsBundle, AssetsManifest } from "pixi.js";
 import * as utils from "@pixi/utils";
-import { Star } from "./components/star";
-import { Packman } from "./components/packman";
+import { PackmanEater } from "./scenes/packman-eater";
 
 (async () => {
   const app = new Application();
@@ -38,40 +31,8 @@ import { Packman } from "./components/packman";
     manifest.bundles.map((b: AssetsBundle) => b.name),
   );
 
-  const scene: Container = new Container();
-  scene.hitArea = app.screen;
-  scene.eventMode = "static";
-
-  const stars: Star[] = [];
-  const starCount = 30;
-  for (let index = 0; index < starCount; index++) {
-    const x = (index * Math.random() * app.screen.width) % app.screen.width;
-    const y = (index * Math.random() * app.screen.height) % app.screen.height;
-    const star = new Star(x, y);
-    stars.push(star);
-    scene.addChild(star);
-  }
-
-  const newPack: Packman = new Packman({
-    x: app.screen.width / 2,
-    y: app.screen.height / 2,
-    width: 50,
-    height: 50,
-  });
-  scene.addChild(newPack);
-
-  scene.on("pointerdown", newPack.mooveTo, newPack);
-
+  const scene: PackmanEater = new PackmanEater(app);
   app.stage.addChild(scene);
-  app.ticker.add(() => {
-    newPack.eating();
-    newPack.mooving();
-    stars.forEach((s: Star) => {
-      if (newPack.contains(s.getStarX(), s.getStarY())) {
-        s.destroyStar();
-      }
-    });
-  });
 })();
 
 // async function testLoads(app: Application): void {
