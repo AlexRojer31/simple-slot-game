@@ -1,6 +1,7 @@
 import { Application, Assets, AssetsBundle, AssetsManifest } from "pixi.js";
 import * as utils from "@pixi/utils";
 import { PackmanEaterScene } from "./scenes/packman-eater-scene";
+import { INIT_EVENT_EMITTER } from "./event-emitter/event-emitter";
 
 (async () => {
   const app = new Application();
@@ -30,6 +31,8 @@ import { PackmanEaterScene } from "./scenes/packman-eater-scene";
   Assets.backgroundLoadBundle(
     manifest.bundles.map((b: AssetsBundle) => b.name),
   );
+
+  INIT_EVENT_EMITTER();
 
   const scene: PackmanEaterScene = new PackmanEaterScene(app);
   app.stage.addChild(scene);
