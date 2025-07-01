@@ -58,11 +58,12 @@ import { Packman } from "./components/packman";
   });
   scene.addChild(newPack);
 
-  scene.on("pointerdown", newPack.animate, newPack);
+  scene.on("pointerdown", newPack.mooveTo, newPack);
 
   app.stage.addChild(scene);
   app.ticker.add(() => {
     newPack.eating();
+    newPack.mooving();
   });
 
   // const packman: Graphics = new Graphics()

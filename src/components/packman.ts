@@ -17,9 +17,9 @@ interface IPackmanSettings {
 export class Packman extends Container {
   private graphicPackman!: Graphics;
   private eatingCounter: number = 0;
-  //   private rotate: number = 0;
-  //   private currentPoint: Point = new Point();
-  //   private pointToMove: Point = new Point();
+  private rotate: number = 0;
+  private currentPoint: Point = new Point();
+  private pointToMove: Point = new Point();
   //   private packmanStates: number[] = [];
 
   constructor(settings: IPackmanSettings) {
@@ -41,18 +41,15 @@ export class Packman extends Container {
     this.pivot.set(this.width / 2, this.height / 2);
   }
 
-  public rotate(deg: number): void {
-    this.graphicPackman.rotation = DEG_TO_RAD(deg);
-  }
+  public mooveTo(e: FederatedPointerEvent): void {
+    this.pointToMove.x = e.clientX;
+    this.pointToMove.y = e.clientY;
+    this.currentPoint.x = this.x;
+    this.currentPoint.y = this.y;
+    this.rotate = GET_CORNER(this.pointToMove, this.currentPoint);
 
-  public move(pointToMove: Point): void {
-    this.position.set(pointToMove.x, pointToMove.y);
-  }
-
-  public animate(e: FederatedPointerEvent): void {
-    const pointToMove: Point = new Point(e.clientX, e.clientY);
-    this.rotate(GET_CORNER(pointToMove, new Point(this.x, this.y)));
-    this.move(pointToMove);
+    this.graphicPackman.rotation = DEG_TO_RAD(this.rotate);
+    this.position.set(this.pointToMove.x, this.pointToMove.y);
   }
 
   public eating(): void {
@@ -79,6 +76,8 @@ export class Packman extends Container {
       .fill({ color: 0x000000 })
       .cut();
   }
+
+  public mooving(): void {}
 
   //   public move(e: MouseEvent) {
   //     const catetX = e.clientX - this.graphicPackman.x;
