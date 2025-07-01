@@ -12,23 +12,35 @@ export function app(): Application {
 
 export async function Run(): Promise<void> {
   application = new Application();
+  await init(application);
+  await loadBandles();
+
+  RunEventEmitter();
+
+  new PackmanEaterScene();
+  new LoadScene();
+}
+
+async function init(application: Application): Promise<void> {
   await application.init({
     antialias: true,
     backgroundAlpha: 0,
     resizeTo: window,
   });
   document.getElementById("pixi-container")!.appendChild(application.canvas);
+}
 
+async function loadBandles(): Promise<void> {
   const baseUrl = "assets";
+  const resolution = Math.min(
+    utils.isMobile.any ? window.devicePixelRatio : 3,
+    3,
+  );
   const response = await fetch(baseUrl + "/manifest.json");
   const manifest = (await response.json()) as AssetsManifest;
   if (!manifest.bundles) {
     throw new Error("[Assets] Invalid assets manifest");
   }
-  const resolution = Math.min(
-    utils.isMobile.any ? window.devicePixelRatio : 3,
-    3,
-  );
 
   await Assets.init({
     basePath: baseUrl,
@@ -38,9 +50,4 @@ export async function Run(): Promise<void> {
   Assets.backgroundLoadBundle(
     manifest.bundles.map((b: AssetsBundle) => b.name),
   );
-
-  RunEventEmitter();
-
-  new PackmanEaterScene();
-  new LoadScene();
 }
