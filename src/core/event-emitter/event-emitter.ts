@@ -6,6 +6,6 @@ export function Emitter(): EventEmitter {
   return instance!;
 }
 
-export function INIT_EVENT_EMITTER() {
+export function RunEventEmitter() {
   instance = new EventEmitter();
 }
