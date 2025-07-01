@@ -2,7 +2,7 @@ import { Application, Container } from "pixi.js";
 import { Star } from "../components/star";
 import { Packman } from "../components/packman";
 
-export class PackmanEater extends Container {
+export class PackmanEaterScene extends Container {
   private stars: Star[] = [];
   private packman!: Packman;
   private app!: Application;

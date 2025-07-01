@@ -1,6 +1,6 @@
 import { Application, Assets, AssetsBundle, AssetsManifest } from "pixi.js";
 import * as utils from "@pixi/utils";
-import { PackmanEater } from "./scenes/packman-eater";
+import { PackmanEaterScene } from "./scenes/packman-eater-scene";
 
 (async () => {
   const app = new Application();
@@ -31,7 +31,7 @@ import { PackmanEater } from "./scenes/packman-eater";
     manifest.bundles.map((b: AssetsBundle) => b.name),
   );
 
-  const scene: PackmanEater = new PackmanEater(app);
+  const scene: PackmanEaterScene = new PackmanEaterScene(app);
   app.stage.addChild(scene);
 })();
 
