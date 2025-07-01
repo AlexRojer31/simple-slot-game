@@ -20,6 +20,7 @@ export class SceneManager {
     Emitter().addListener(SetSceneEvent.NAME, (e: SetSceneEvent) => {
       switch (e.data.sceneName) {
         case "PackmanEaterScene": {
+          this.currentScene?.unload();
           if (this.scenes.has(e.data.sceneName)) {
             this.scenes.get(e.data.sceneName)!.load();
           } else {

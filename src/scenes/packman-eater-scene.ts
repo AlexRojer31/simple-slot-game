@@ -1,8 +1,10 @@
-import { Container } from "pixi.js";
+import { Container, Text } from "pixi.js";
 import { StarComponent } from "../components/star-component";
 import { PackmanComponent } from "../components/packman-component";
 import { app } from "../app";
 import { IScene } from "../core/scene-manager";
+import { Emitter } from "../core/event-emitter/event-emitter";
+import { SetSceneEvent } from "../core/event-emitter/custom-events/set-scene-event";
 
 export class PackmanEaterScene extends Container implements IScene {
   private stars: StarComponent[] = [];
@@ -16,39 +18,42 @@ export class PackmanEaterScene extends Container implements IScene {
 
     this.generateStars();
     this.generatePackman();
-  }
 
-  load(): void {
+    const loadedMessage = new Text({
+      text: "Загрузить другую сцену",
+      style: {
+        fill: "#ffffff",
+        fontSize: 36,
+        fontFamily: "MyFont",
+      },
+      anchor: 0.5,
+      x: app().screen.width / 2,
+      y: 100,
+    });
+    loadedMessage.eventMode = "static";
+    loadedMessage.on("pointertap", () => {
+      Emitter().emit(
+        SetSceneEvent.NAME,
+        new SetSceneEvent({ sceneName: "LoadScene" }),
+      );
+    });
+    this.addChild(loadedMessage);
+
     app().stage.addChild(this);
     app().ticker.add(() => {
       this.animate();
     });
   }
-  unload(): void {
-    this.destroy();
+
+  load(): void {
+    this.visible = true;
   }
 
-  private subscribes(): void {
-    // Emitter().addListener(BundleLoadedEvent.NAME, (e: BundleLoadedEvent) => {
-    //   if (e.data.bandleName == "backgrounds") {
-    //     setTimeout(() => {
-    //       const loadedMessage = new Text({
-    //         text: "Загружен новый экранчеГ",
-    //         style: {
-    //           fill: "#ffffff",
-    //           fontSize: 36,
-    //           fontFamily: "MyFont",
-    //         },
-    //         anchor: 0.5,
-    //         x: app().screen.width / 2,
-    //         y: 100,
-    //       });
-    //       loadedMessage.eventMode = "static";
-    //       this.addChild(loadedMessage);
-    //     }, 3000);
-    //   }
-    // });
+  unload(): void {
+    this.visible = false;
   }
+
+  private subscribes(): void {}
 
   private generatePackman(): void {
     this.packman = new PackmanComponent({
