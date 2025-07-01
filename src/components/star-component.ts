@@ -1,6 +1,6 @@
 import { Container, FederatedPointerEvent, Graphics } from "pixi.js";
-import { Emitter } from "../event-emitter/event-emitter";
-import { MustToBeEatingEvent } from "../event-emitter/custom-events/must-to-be-eating-event";
+import { Emitter } from "../core/event-emitter/event-emitter";
+import { MustToBeEatingEvent } from "../core/event-emitter/custom-events/must-to-be-eating-event";
 
 export class StarComponent extends Container {
   private graphicStar!: Graphics;

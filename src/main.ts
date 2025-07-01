@@ -2,8 +2,8 @@ import { Assets, AssetsBundle, AssetsManifest } from "pixi.js";
 import * as utils from "@pixi/utils";
 import { PackmanEaterScene } from "./scenes/packman-eater-scene";
 import { app, INIT_APP } from "./app";
-import { Emitter } from "./event-emitter/event-emitter";
-import { BundleLoadedEvent } from "./event-emitter/custom-events/bundle-loaded-event";
+import { Emitter } from "./core/event-emitter/event-emitter";
+import { BundleLoadedEvent } from "./core/event-emitter/custom-events/bundle-loaded-event";
 import { LoadScene } from "./scenes/load-scene";
 
 (async () => {

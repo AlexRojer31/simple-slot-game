@@ -1,7 +1,7 @@
 import { Assets, Container, Graphics, Sprite } from "pixi.js";
 import { app } from "../app";
-import { Emitter } from "../event-emitter/event-emitter";
-import { BundleLoadedEvent } from "../event-emitter/custom-events/bundle-loaded-event";
+import { Emitter } from "../core/event-emitter/event-emitter";
+import { BundleLoadedEvent } from "../core/event-emitter/custom-events/bundle-loaded-event";
 
 export class LoadScene extends Container {
   private assetsCounter: number = 0;
