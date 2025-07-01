@@ -15,15 +15,10 @@ export class PackmanEaterScene extends Container {
 
     this.generateStars();
     this.generatePackman();
-    this.setEvents();
 
     this.app.ticker.add(() => {
       this.animate();
     });
-  }
-
-  private setEvents(): void {
-    this.on("pointerdown", this.packman.mooveTo, this.packman);
   }
 
   private generatePackman(): void {

@@ -1,4 +1,6 @@
-import { Container, Graphics } from "pixi.js";
+import { Container, FederatedPointerEvent, Graphics } from "pixi.js";
+import { Emitter } from "../event-emitter/event-emitter";
+import { MustToBeEatingEvent } from "../event-emitter/custom-events/must-to-be-eating-event";
 
 export class StarComponent extends Container {
   private graphicStar!: Graphics;
@@ -22,12 +24,13 @@ export class StarComponent extends Container {
     this.graphicStar = graphics;
     this.eventMode = "static";
     this.cursor = "pointer";
-    this.on("pointerdown", () => {
+    this.on("pointerdown", (e: FederatedPointerEvent) => {
       this.canBeEated = true;
-      graphics
-        .clear()
-        .star(this.starX, this.starY, 5, radius + 3, 0, rotation)
-        .fill({ color: 0xffdf00, alpha: radius / 5 });
+
+      Emitter().emit(
+        MustToBeEatingEvent.NAME,
+        new MustToBeEatingEvent({ x: e.x, y: e.y }),
+      );
     });
     this.addChild(this.graphicStar);
   }

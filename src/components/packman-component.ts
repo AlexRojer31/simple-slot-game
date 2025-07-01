@@ -1,5 +1,7 @@
-import { Container, FederatedPointerEvent, Graphics, Point } from "pixi.js";
+import { Container, Graphics, Point } from "pixi.js";
 import { DEG_TO_RAD, GET_CORNER } from "../functions";
+import { Emitter } from "../event-emitter/event-emitter";
+import { MustToBeEatingEvent } from "../event-emitter/custom-events/must-to-be-eating-event";
 
 enum STATES {
   idle = 0,
@@ -39,11 +41,13 @@ export class PackmanComponent extends Container {
     this.width = settings.width;
     this.height = settings.height;
     this.pivot.set(this.width / 2, this.height / 2);
+
+    Emitter().addListener(MustToBeEatingEvent.NAME, this.mooveTo, this);
   }
 
-  public mooveTo(e: FederatedPointerEvent): void {
-    this.pointToMove.x = e.clientX;
-    this.pointToMove.y = e.clientY;
+  public mooveTo(e: MustToBeEatingEvent): void {
+    this.pointToMove.x = e.data.x;
+    this.pointToMove.y = e.data.y;
     this.currentPoint.x = this.x;
     this.currentPoint.y = this.y;
     this.rotate = GET_CORNER(this.pointToMove, this.currentPoint);
@@ -92,6 +96,8 @@ export class PackmanComponent extends Container {
       switch (this.statesSteps[0]) {
         case STATES.idle: {
           this.statesSteps.shift();
+
+          Emitter().addListener(MustToBeEatingEvent.NAME, this.mooveTo, this);
           break;
         }
         case STATES.move: {
@@ -115,6 +121,12 @@ export class PackmanComponent extends Container {
           ) {
             this.statesSteps.shift();
           }
+
+          Emitter().removeListener(
+            MustToBeEatingEvent.NAME,
+            this.mooveTo,
+            this,
+          );
           break;
         }
         case STATES.rotation: {
@@ -128,6 +140,12 @@ export class PackmanComponent extends Container {
           if (deg + 1 > this.rotate && deg - 1 < this.rotate) {
             this.statesSteps.shift();
           }
+
+          Emitter().removeListener(
+            MustToBeEatingEvent.NAME,
+            this.mooveTo,
+            this,
+          );
         }
       }
     }
