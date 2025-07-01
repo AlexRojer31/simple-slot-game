@@ -1,4 +1,4 @@
-import { Container, FederatedPointerEvent, Graphics } from "pixi.js";
+import { Circle, Container, FederatedPointerEvent, Graphics } from "pixi.js";
 import { Emitter } from "../core/event-emitter/event-emitter";
 import { MustToBeEatingEvent } from "../core/event-emitter/custom-events/must-to-be-eating-event";
 
@@ -24,6 +24,7 @@ export class StarComponent extends Container {
     this.graphicStar = graphics;
     this.eventMode = "static";
     this.cursor = "pointer";
+    this.hitArea = new Circle(x, y, 10);
     this.on("pointerdown", (e: FederatedPointerEvent) => {
       this.canBeEated = true;
 
