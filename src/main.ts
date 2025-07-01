@@ -7,6 +7,8 @@ import {
   Point,
 } from "pixi.js";
 import * as utils from "@pixi/utils";
+import { Star } from "./components/star";
+import { Packman } from "./components/packman";
 
 enum STATES {
   idle = 0,
@@ -44,16 +46,10 @@ enum STATES {
 
   const starCount = 30;
   for (let index = 0; index < starCount; index++) {
-    const graphics = new Graphics();
     const x = (index * Math.random() * app.screen.width) % app.screen.width;
     const y = (index * Math.random() * app.screen.height) % app.screen.height;
-    const radius = 2 + Math.random() * 3;
-    const rotation = Math.random() * Math.PI * 2;
-
-    graphics
-      .star(x, y, 5, radius, 0, rotation)
-      .fill({ color: 0xffdf00, alpha: radius / 5 });
-    app.stage.addChild(graphics);
+    const star = new Star(x, y);
+    app.stage.addChild(star);
   }
 
   const packman: Graphics = new Graphics()
@@ -65,7 +61,6 @@ enum STATES {
     .circle(-30, -30, 20)
     .fill({ color: 0x000000 })
     .cut();
-  packman.rotation = degInRad(0);
   packman.position.set(app.screen.width / 2, app.screen.height / 2);
   app.stage.addChild(packman);
 
@@ -104,7 +99,16 @@ enum STATES {
   }
 
   let counter: number = 0;
+  const newPack: Packman = new Packman({
+    x: 140,
+    y: 140,
+    width: 50,
+    height: 50,
+  });
+  app.stage.addChild(newPack);
+
   app.ticker.add(() => {
+    newPack.eating();
     if (counter > 100000) {
       counter = 0;
     } else {
