@@ -1,4 +1,5 @@
 import { Container, Graphics } from "pixi.js";
+import { CustomEvent } from "../events/custom-event";
 
 export class StarComponent extends Container {
   private graphicStar!: Graphics;
@@ -24,6 +25,9 @@ export class StarComponent extends Container {
     this.cursor = "pointer";
     this.on("pointerdown", () => {
       this.canBeEated = true;
+      const event: CustomEvent = new CustomEvent();
+      event.data = "asdsadsadasdasd asd asd ad sa ";
+      window.dispatchEvent(event);
       graphics
         .clear()
         .star(this.starX, this.starY, 5, radius + 3, 0, rotation)

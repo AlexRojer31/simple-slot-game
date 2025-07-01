@@ -1,5 +1,6 @@
 import { Container, FederatedPointerEvent, Graphics, Point } from "pixi.js";
 import { DEG_TO_RAD, GET_CORNER } from "../utils/functions";
+import { CUSTOM_EVENT, CustomEvent } from "../events/custom-event";
 
 enum STATES {
   idle = 0,
@@ -24,6 +25,11 @@ export class PackmanComponent extends Container {
 
   constructor(settings: IPackmanSettings) {
     super();
+    window.addEventListener(CUSTOM_EVENT, (e: CustomEvent | Event) => {
+      if (e instanceof CustomEvent) {
+        console.log(e.data);
+      }
+    });
     const packman: Graphics = new Graphics()
       .arc(0, 0, 50, DEG_TO_RAD(30), DEG_TO_RAD(320))
       .stroke({
