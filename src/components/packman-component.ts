@@ -1,5 +1,5 @@
 import { Container, FederatedPointerEvent, Graphics, Point } from "pixi.js";
-import { DEG_TO_RAD, GET_CORNER } from "../utils/functions";
+import { DEG_TO_RAD, GET_CORNER } from "../functions";
 
 enum STATES {
   idle = 0,
