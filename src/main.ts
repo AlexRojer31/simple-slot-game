@@ -1,13 +1,6 @@
-import { PackmanEaterScene } from "./scenes/packman-eater-scene";
 import { Run } from "./app";
-import { LoadScene } from "./scenes/load-scene";
 
-(async () => {
-  await Run();
-
-  new PackmanEaterScene();
-  new LoadScene();
-})();
+Run().catch((e) => console.log(e));
 
 // async function testLoads(app: Application): Promise<void> {
 //   const texturesAssets = await Assets.loadBundle("textures");
