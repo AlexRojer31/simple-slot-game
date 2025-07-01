@@ -40,26 +40,31 @@ enum STATES {
     manifest.bundles.map((b: AssetsBundle) => b.name),
   );
 
-  const rect: Graphics = new Graphics()
-    .rect(0, 0, 100, 100)
-    .fill(0xff0000)
-    .moveTo(50, 50)
-    .lineTo(100, 0)
-    .lineTo(100, 50)
-    .lineTo(100, 100)
-    .fill(0xffff00);
-  rect.pivot.set(rect.width / 2, rect.height / 2);
-  rect.position.set(app.screen.width / 2, app.screen.height / 2);
-  rect.rotation = degInRad(0);
-  app.stage.addChild(rect);
+  const packman: Graphics = new Graphics()
+    .arc(0, 0, 50, degInRad(30), degInRad(320))
+    .stroke({
+      width: 100,
+      color: 0xffff00,
+    })
+    .circle(-30, -30, 20)
+    .fill({ color: 0x000000 })
+    .cut();
+  packman.rotation = degInRad(0);
+  packman.position.set(app.screen.width / 2, app.screen.height / 2);
+  app.stage.addChild(packman);
 
   let rotate: number = 0;
-  let rectState: number = STATES.idle;
+  let packmanState: number = STATES.idle;
   window.addEventListener("click", (e: MouseEvent) => {
-    const catetX = e.clientX - rect.x;
-    const catetY = e.clientY - rect.y;
-    const hipotenuza = Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2));
-    const corner = Math.floor((Math.asin(catetY / hipotenuza) * 180) / Math.PI);
+    const catetX = e.clientX - packman.x;
+    const catetY = e.clientY - packman.y;
+    const corner = Math.floor(
+      (Math.asin(
+        catetY / Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
+      ) *
+        180) /
+        Math.PI,
+    );
     if (catetX > 0) {
       rotate = 360 + corner > 360 ? 0 + corner : 360 + corner;
     } else {
@@ -68,43 +73,47 @@ enum STATES {
     if (rotate == 360) {
       rotate = 0;
     }
-    rectState = STATES.rotation;
+    packmanState = STATES.rotation;
   });
 
+  let counter: number = 0;
   app.ticker.add(() => {
-    switch (rectState) {
+    counter += 0.1;
+
+    packman
+      .clear()
+      .arc(
+        0,
+        0,
+        50,
+        degInRad(30 - Math.abs(Math.sin(counter) * 30)),
+        degInRad(320 + Math.abs(Math.sin(counter) * 30)),
+      )
+      .stroke({
+        width: 100,
+        color: 0xffff00,
+      })
+      .circle(-30, -30, 20)
+      .fill({ color: 0x000000 })
+      .cut();
+
+    switch (packmanState) {
       case STATES.idle:
         break;
       case STATES.rotation: {
-        const deg: number = (rect.rotation * 180) / Math.PI;
+        const deg: number = (packman.rotation * 180) / Math.PI;
         if (deg > rotate) {
-          rect.rotation = degInRad(deg - 1);
+          packman.rotation = degInRad(deg - 1);
         }
         if (deg < rotate) {
-          rect.rotation = degInRad(deg + 1);
+          packman.rotation = degInRad(deg + 1);
         }
         if (deg == rotate) {
-          rectState = STATES.idle;
+          packmanState = STATES.idle;
         }
       }
     }
   });
-
-  // rect.rotation = degInRad(rotate);
-
-  // const rad: number = Math.PI / 180;
-  // const packman: Graphics = new Graphics()
-  //   .arc(0, 0, 50, rad * 30, 320 * rad)
-  //   .stroke({
-  //     width: 100,
-  //     color: 0xffff00,
-  //   })
-  //   .circle(-30, -30, 20)
-  //   .fill({ color: 0x000000 })
-  //   .cut();
-
-  // packman.position.set(150);
-  // app.stage.addChild(packman);
 })();
 
 function degInRad(deg: number): number {
