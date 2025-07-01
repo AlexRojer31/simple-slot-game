@@ -1,16 +1,16 @@
-import { Application, Assets, AssetsBundle, AssetsManifest } from "pixi.js";
+import { Assets, AssetsBundle, AssetsManifest } from "pixi.js";
 import * as utils from "@pixi/utils";
 import { PackmanEaterScene } from "./scenes/packman-eater-scene";
-import { INIT_EVENT_EMITTER } from "./event-emitter/event-emitter";
+import { app, INIT_APP } from "./app";
 
 (async () => {
-  const app = new Application();
-  await app.init({
+  INIT_APP();
+  await app().init({
     antialias: true,
     backgroundAlpha: 0,
     resizeTo: window,
   });
-  document.getElementById("pixi-container")!.appendChild(app.canvas);
+  document.getElementById("pixi-container")!.appendChild(app().canvas);
 
   const baseUrl = "assets";
   const response = await fetch(baseUrl + "/manifest.json");
@@ -32,10 +32,8 @@ import { INIT_EVENT_EMITTER } from "./event-emitter/event-emitter";
     manifest.bundles.map((b: AssetsBundle) => b.name),
   );
 
-  INIT_EVENT_EMITTER();
-
-  const scene: PackmanEaterScene = new PackmanEaterScene(app);
-  app.stage.addChild(scene);
+  const scene: PackmanEaterScene = new PackmanEaterScene();
+  app().stage.addChild(scene);
 })();
 
 // async function testLoads(app: Application): void {

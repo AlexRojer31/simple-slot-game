@@ -1,30 +1,29 @@
-import { Application, Container } from "pixi.js";
+import { Container } from "pixi.js";
 import { StarComponent } from "../components/star-component";
 import { PackmanComponent } from "../components/packman-component";
+import { app } from "../app";
 
 export class PackmanEaterScene extends Container {
   private stars: StarComponent[] = [];
   private packman!: PackmanComponent;
-  private app!: Application;
 
-  constructor(app: Application) {
+  constructor() {
     super();
-    this.app = app;
     this.eventMode = "static";
-    this.hitArea = app.screen;
+    this.hitArea = app().screen;
 
     this.generateStars();
     this.generatePackman();
 
-    this.app.ticker.add(() => {
+    app().ticker.add(() => {
       this.animate();
     });
   }
 
   private generatePackman(): void {
     this.packman = new PackmanComponent({
-      x: this.app.screen.width / 2,
-      y: this.app.screen.height / 2,
+      x: app().screen.width / 2,
+      y: app().screen.height / 2,
       width: 50,
       height: 50,
     });
@@ -35,10 +34,9 @@ export class PackmanEaterScene extends Container {
     const starCount = 30;
     for (let index = 0; index < starCount; index++) {
       const x =
-        (index * Math.random() * this.app.screen.width) % this.app.screen.width;
+        (index * Math.random() * app().screen.width) % app().screen.width;
       const y =
-        (index * Math.random() * this.app.screen.height) %
-        this.app.screen.height;
+        (index * Math.random() * app().screen.height) % app().screen.height;
       const star = new StarComponent(x, y);
       this.stars.push(star);
       this.addChild(star);
