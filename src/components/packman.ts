@@ -1,5 +1,5 @@
-import { Container, Graphics } from "pixi.js";
-import DEG_TO_RAD from "../utils/functions";
+import { Container, FederatedPointerEvent, Graphics, Point } from "pixi.js";
+import { DEG_TO_RAD, GET_CORNER } from "../utils/functions";
 
 // enum STATES {
 //   idle = 0,
@@ -43,6 +43,12 @@ export class Packman extends Container {
 
   public rotate(deg: number): void {
     this.graphicPackman.rotation = DEG_TO_RAD(deg);
+  }
+
+  public rotating(e: FederatedPointerEvent): void {
+    this.rotate(
+      GET_CORNER(new Point(e.clientX, e.clientY), new Point(this.x, this.y)),
+    );
   }
 
   public eating(): void {

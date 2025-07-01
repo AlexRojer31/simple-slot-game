@@ -4,8 +4,6 @@ import {
   AssetsBundle,
   AssetsManifest,
   Container,
-  FederatedPointerEvent,
-  Point,
 } from "pixi.js";
 import * as utils from "@pixi/utils";
 import { Star } from "./components/star";
@@ -60,39 +58,7 @@ import { Packman } from "./components/packman";
   });
   scene.addChild(newPack);
 
-  scene.on("pointerdown", rotate);
-  function rotate(e: FederatedPointerEvent) {
-    newPack.rotate(
-      getCorner(
-        new Point(e.clientX, e.clientY),
-        new Point(newPack.x, newPack.y),
-      ),
-    );
-  }
-
-  function getCorner(pointToMove: Point, currentPoint: Point): number {
-    const catetX = pointToMove.x - currentPoint.x;
-    const catetY = pointToMove.y - currentPoint.y;
-    const corner = Math.floor(
-      (Math.asin(
-        catetY / Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
-      ) *
-        180) /
-        Math.PI,
-    );
-
-    let rotateCorner: number = 0;
-    if (catetX > 0) {
-      rotateCorner = 360 + corner > 360 ? 0 + corner : 360 + corner;
-    } else {
-      rotateCorner = 180 - corner;
-    }
-    if (rotateCorner == 360) {
-      rotateCorner = 0;
-    }
-
-    return rotateCorner;
-  }
+  scene.on("pointerdown", newPack.rotating, newPack);
 
   app.stage.addChild(scene);
   app.ticker.add(() => {
