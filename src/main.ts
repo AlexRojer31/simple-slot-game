@@ -4,12 +4,14 @@ import {
   AssetsBundle,
   AssetsManifest,
   Graphics,
+  Point,
 } from "pixi.js";
 import * as utils from "@pixi/utils";
 
 enum STATES {
   idle = 0,
   rotation,
+  move,
 }
 (async () => {
   const app = new Application();
@@ -54,8 +56,12 @@ enum STATES {
   app.stage.addChild(packman);
 
   let rotate: number = 0;
-  let packmanState: number = STATES.idle;
-  window.addEventListener("click", (e: MouseEvent) => {
+  const currentPoint: Point = new Point();
+  const pointToMove: Point = new Point();
+  const packmanStates: number[] = [];
+  window.addEventListener("click", move);
+
+  function move(e: MouseEvent) {
     const catetX = e.clientX - packman.x;
     const catetY = e.clientY - packman.y;
     const corner = Math.floor(
@@ -73,8 +79,15 @@ enum STATES {
     if (rotate == 360) {
       rotate = 0;
     }
-    packmanState = STATES.rotation;
-  });
+    pointToMove.x = e.clientX;
+    pointToMove.y = e.clientY;
+    currentPoint.x = packman.x;
+    currentPoint.y = packman.y;
+    packmanStates.push(STATES.rotation);
+    packmanStates.push(STATES.move);
+    packmanStates.push(STATES.idle);
+    window.removeEventListener("click", move);
+  }
 
   let counter: number = 0;
   app.ticker.add(() => {
@@ -97,19 +110,45 @@ enum STATES {
       .fill({ color: 0x000000 })
       .cut();
 
-    switch (packmanState) {
-      case STATES.idle:
-        break;
-      case STATES.rotation: {
-        const deg: number = (packman.rotation * 180) / Math.PI;
-        if (deg > rotate) {
-          packman.rotation = degInRad(deg - 1);
+    if (packmanStates.length > 0) {
+      switch (packmanStates[0]) {
+        case STATES.idle: {
+          window.addEventListener("click", move);
+          packmanStates.shift();
+          break;
         }
-        if (deg < rotate) {
-          packman.rotation = degInRad(deg + 1);
+        case STATES.move: {
+          const stepX: number = currentPoint.x > pointToMove.x ? -1 : 1;
+          currentPoint.x += stepX;
+          const stepY: number = currentPoint.y > pointToMove.y ? -1 : 1;
+          currentPoint.y += stepY;
+          if (currentPoint.x != pointToMove.x) {
+            packman.position.set(currentPoint.x, packman.position.y);
+          }
+          if (currentPoint.y != pointToMove.y) {
+            packman.position.set(packman.position.x, currentPoint.y);
+          }
+          if (
+            packman.position.x + 10 > pointToMove.x &&
+            packman.position.x - 10 < pointToMove.x &&
+            packman.position.y + 10 > pointToMove.y &&
+            packman.position.y - 10 < pointToMove.y
+          ) {
+            packmanStates.shift();
+          }
+          break;
         }
-        if (deg == rotate) {
-          packmanState = STATES.idle;
+        case STATES.rotation: {
+          const deg: number = (packman.rotation * 180) / Math.PI;
+          if (deg > rotate) {
+            packman.rotation = degInRad(deg - 1);
+          }
+          if (deg < rotate) {
+            packman.rotation = degInRad(deg + 1);
+          }
+          if (deg + 1 > rotate && deg - 1 < rotate) {
+            packmanStates.shift();
+          }
         }
       }
     }
@@ -121,6 +160,7 @@ function degInRad(deg: number): number {
 
   return deg / rad;
 }
+
 // async function testLoads(app: Application): void {
 //   const starCount = 50;
 //   const graphics = new Graphics();
