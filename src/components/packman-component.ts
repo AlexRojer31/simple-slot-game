@@ -1,5 +1,4 @@
 import { Container, Graphics, Point } from "pixi.js";
-import { DEG_TO_RAD, GET_CORNER } from "../functions";
 import { Emitter } from "../event-emitter/event-emitter";
 import { MustToBeEatingEvent } from "../event-emitter/custom-events/must-to-be-eating-event";
 
@@ -27,7 +26,7 @@ export class PackmanComponent extends Container {
   constructor(settings: IPackmanSettings) {
     super();
     const packman: Graphics = new Graphics()
-      .arc(0, 0, 50, DEG_TO_RAD(30), DEG_TO_RAD(320))
+      .arc(0, 0, 50, this.convertDegTorad(30), this.convertDegTorad(320))
       .stroke({
         width: 100,
         color: 0xffff00,
@@ -50,7 +49,7 @@ export class PackmanComponent extends Container {
     this.pointToMove.y = e.data.y;
     this.currentPoint.x = this.x;
     this.currentPoint.y = this.y;
-    this.rotate = GET_CORNER(this.pointToMove, this.currentPoint);
+    this.rotate = this.calculateCorner(this.pointToMove, this.currentPoint);
 
     this.statesSteps.push(STATES.rotation);
     this.statesSteps.push(STATES.move);
@@ -79,8 +78,8 @@ export class PackmanComponent extends Container {
         0,
         0,
         50,
-        DEG_TO_RAD(30 - Math.abs(Math.sin(this.eatingCounter) * 30)),
-        DEG_TO_RAD(320 + Math.abs(Math.sin(this.eatingCounter) * 30)),
+        this.convertDegTorad(30 - Math.abs(Math.sin(this.eatingCounter) * 30)),
+        this.convertDegTorad(320 + Math.abs(Math.sin(this.eatingCounter) * 30)),
       )
       .stroke({
         width: 100,
@@ -132,10 +131,10 @@ export class PackmanComponent extends Container {
         case STATES.rotation: {
           const deg: number = (this.graphicPackman.rotation * 180) / Math.PI;
           if (deg > this.rotate) {
-            this.graphicPackman.rotation = DEG_TO_RAD(deg - 1);
+            this.graphicPackman.rotation = this.convertDegTorad(deg - 1);
           }
           if (deg < this.rotate) {
-            this.graphicPackman.rotation = DEG_TO_RAD(deg + 1);
+            this.graphicPackman.rotation = this.convertDegTorad(deg + 1);
           }
           if (deg + 1 > this.rotate && deg - 1 < this.rotate) {
             this.statesSteps.shift();
@@ -149,5 +148,35 @@ export class PackmanComponent extends Container {
         }
       }
     }
+  }
+
+  private convertDegTorad(deg: number): number {
+    const rad: number = 180 / Math.PI;
+
+    return deg / rad;
+  }
+
+  private calculateCorner(pointToMove: Point, currentPoint: Point): number {
+    const catetX = pointToMove.x - currentPoint.x;
+    const catetY = pointToMove.y - currentPoint.y;
+    const corner = Math.floor(
+      (Math.asin(
+        catetY / Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
+      ) *
+        180) /
+        Math.PI,
+    );
+
+    let rotateCorner: number = 0;
+    if (catetX > 0) {
+      rotateCorner = 360 + corner > 360 ? 0 + corner : 360 + corner;
+    } else {
+      rotateCorner = 180 - corner;
+    }
+    if (rotateCorner == 360) {
+      rotateCorner = 0;
+    }
+
+    return rotateCorner;
   }
 }
