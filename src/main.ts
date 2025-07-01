@@ -45,8 +45,8 @@ enum STATES {
   const starCount = 30;
   for (let index = 0; index < starCount; index++) {
     const graphics = new Graphics();
-    const x = (index * 0.78695 * app.screen.width) % app.screen.width;
-    const y = (index * 0.9382 * app.screen.height) % app.screen.height;
+    const x = (index * Math.random() * app.screen.width) % app.screen.width;
+    const y = (index * Math.random() * app.screen.height) % app.screen.height;
     const radius = 2 + Math.random() * 3;
     const rotation = Math.random() * Math.PI * 2;
 
@@ -105,7 +105,11 @@ enum STATES {
 
   let counter: number = 0;
   app.ticker.add(() => {
-    counter += 0.1;
+    if (counter > 100000) {
+      counter = 0;
+    } else {
+      counter += 0.1;
+    }
 
     packman
       .clear()
