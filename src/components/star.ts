@@ -6,7 +6,7 @@ export class Star extends Container {
   constructor(x: number, y: number) {
     super();
     const graphics = new Graphics();
-    const radius = 2 + Math.random() * 3;
+    const radius = 3 + Math.random() * 5;
     const rotation = Math.random() * Math.PI * 2;
 
     graphics
@@ -14,6 +14,8 @@ export class Star extends Container {
       .fill({ color: 0xffdf00, alpha: radius / 5 });
 
     this.graphicStar = graphics;
+    this.eventMode = "static";
+    this.cursor = "pointer";
     this.addChild(this.graphicStar);
   }
 }

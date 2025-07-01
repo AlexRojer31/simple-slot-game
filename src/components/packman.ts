@@ -33,12 +33,16 @@ export class Packman extends Container {
       .circle(-30, -30, 20)
       .fill({ color: 0x000000 })
       .cut();
-    packman.position.set(settings.x, settings.y);
+    this.position.set(settings.x, settings.y);
     this.graphicPackman = packman;
     this.addChild(this.graphicPackman);
     this.width = settings.width;
     this.height = settings.height;
     this.pivot.set(this.width / 2, this.height / 2);
+  }
+
+  public rotate(deg: number): void {
+    this.graphicPackman.rotation = DEG_TO_RAD(deg);
   }
 
   public eating(): void {

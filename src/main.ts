@@ -3,18 +3,14 @@ import {
   Assets,
   AssetsBundle,
   AssetsManifest,
-  Graphics,
+  Container,
+  FederatedPointerEvent,
   Point,
 } from "pixi.js";
 import * as utils from "@pixi/utils";
 import { Star } from "./components/star";
 import { Packman } from "./components/packman";
 
-enum STATES {
-  idle = 0,
-  rotation,
-  move,
-}
 (async () => {
   const app = new Application();
   await app.init({
@@ -44,35 +40,39 @@ enum STATES {
     manifest.bundles.map((b: AssetsBundle) => b.name),
   );
 
+  const scene: Container = new Container();
+  scene.hitArea = app.screen;
+  scene.eventMode = "static";
+
   const starCount = 30;
   for (let index = 0; index < starCount; index++) {
     const x = (index * Math.random() * app.screen.width) % app.screen.width;
     const y = (index * Math.random() * app.screen.height) % app.screen.height;
     const star = new Star(x, y);
-    app.stage.addChild(star);
+    scene.addChild(star);
   }
 
-  const packman: Graphics = new Graphics()
-    .arc(0, 0, 50, degInRad(30), degInRad(320))
-    .stroke({
-      width: 100,
-      color: 0xffff00,
-    })
-    .circle(-30, -30, 20)
-    .fill({ color: 0x000000 })
-    .cut();
-  packman.position.set(app.screen.width / 2, app.screen.height / 2);
-  app.stage.addChild(packman);
+  const newPack: Packman = new Packman({
+    x: app.screen.width / 2,
+    y: app.screen.height / 2,
+    width: 50,
+    height: 50,
+  });
+  scene.addChild(newPack);
 
-  let rotate: number = 0;
-  const currentPoint: Point = new Point();
-  const pointToMove: Point = new Point();
-  const packmanStates: number[] = [];
-  window.addEventListener("click", move);
+  scene.on("pointerdown", rotate);
+  function rotate(e: FederatedPointerEvent) {
+    newPack.rotate(
+      getCorner(
+        new Point(e.clientX, e.clientY),
+        new Point(newPack.x, newPack.y),
+      ),
+    );
+  }
 
-  function move(e: MouseEvent) {
-    const catetX = e.clientX - packman.x;
-    const catetY = e.clientY - packman.y;
+  function getCorner(pointToMove: Point, currentPoint: Point): number {
+    const catetX = pointToMove.x - currentPoint.x;
+    const catetY = pointToMove.y - currentPoint.y;
     const corner = Math.floor(
       (Math.asin(
         catetY / Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
@@ -80,108 +80,141 @@ enum STATES {
         180) /
         Math.PI,
     );
+
+    let rotateCorner: number = 0;
     if (catetX > 0) {
-      rotate = 360 + corner > 360 ? 0 + corner : 360 + corner;
+      rotateCorner = 360 + corner > 360 ? 0 + corner : 360 + corner;
     } else {
-      rotate = 180 - corner;
+      rotateCorner = 180 - corner;
     }
-    if (rotate == 360) {
-      rotate = 0;
+    if (rotateCorner == 360) {
+      rotateCorner = 0;
     }
-    pointToMove.x = e.clientX;
-    pointToMove.y = e.clientY;
-    currentPoint.x = packman.x;
-    currentPoint.y = packman.y;
-    packmanStates.push(STATES.rotation);
-    packmanStates.push(STATES.move);
-    packmanStates.push(STATES.idle);
-    window.removeEventListener("click", move);
+
+    return rotateCorner;
   }
 
-  let counter: number = 0;
-  const newPack: Packman = new Packman({
-    x: 140,
-    y: 140,
-    width: 50,
-    height: 50,
-  });
-  app.stage.addChild(newPack);
-
+  app.stage.addChild(scene);
   app.ticker.add(() => {
     newPack.eating();
-    if (counter > 100000) {
-      counter = 0;
-    } else {
-      counter += 0.1;
-    }
-
-    packman
-      .clear()
-      .arc(
-        0,
-        0,
-        50,
-        degInRad(30 - Math.abs(Math.sin(counter) * 30)),
-        degInRad(320 + Math.abs(Math.sin(counter) * 30)),
-      )
-      .stroke({
-        width: 100,
-        color: 0xffff00,
-      })
-      .circle(-30, -30, 20)
-      .fill({ color: 0x000000 })
-      .cut();
-
-    if (packmanStates.length > 0) {
-      switch (packmanStates[0]) {
-        case STATES.idle: {
-          window.addEventListener("click", move);
-          packmanStates.shift();
-          break;
-        }
-        case STATES.move: {
-          const stepX: number = currentPoint.x > pointToMove.x ? -1 : 1;
-          currentPoint.x += stepX;
-          const stepY: number = currentPoint.y > pointToMove.y ? -1 : 1;
-          currentPoint.y += stepY;
-          if (currentPoint.x != pointToMove.x) {
-            packman.position.set(currentPoint.x, packman.position.y);
-          }
-          if (currentPoint.y != pointToMove.y) {
-            packman.position.set(packman.position.x, currentPoint.y);
-          }
-          if (
-            packman.position.x + 10 > pointToMove.x &&
-            packman.position.x - 10 < pointToMove.x &&
-            packman.position.y + 10 > pointToMove.y &&
-            packman.position.y - 10 < pointToMove.y
-          ) {
-            packmanStates.shift();
-          }
-          break;
-        }
-        case STATES.rotation: {
-          const deg: number = (packman.rotation * 180) / Math.PI;
-          if (deg > rotate) {
-            packman.rotation = degInRad(deg - 1);
-          }
-          if (deg < rotate) {
-            packman.rotation = degInRad(deg + 1);
-          }
-          if (deg + 1 > rotate && deg - 1 < rotate) {
-            packmanStates.shift();
-          }
-        }
-      }
-    }
   });
+
+  // const packman: Graphics = new Graphics()
+  //   .arc(0, 0, 50, degInRad(30), degInRad(320))
+  //   .stroke({
+  //     width: 100,
+  //     color: 0xffff00,
+  //   })
+  //   .circle(-30, -30, 20)
+  //   .fill({ color: 0x000000 })
+  //   .cut();
+  // packman.position.set(app.screen.width / 2, app.screen.height / 2);
+  // app.stage.addChild(packman);
+
+  // let rotate: number = 0;
+  // const currentPoint: Point = new Point();
+  // const pointToMove: Point = new Point();
+  // const packmanStates: number[] = [];
+  // window.addEventListener("click", move);
+
+  // function move(e: MouseEvent) {
+  //   const catetX = e.clientX - packman.x;
+  //   const catetY = e.clientY - packman.y;
+  //   const corner = Math.floor(
+  //     (Math.asin(
+  //       catetY / Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
+  //     ) *
+  //       180) /
+  //       Math.PI,
+  //   );
+  //   if (catetX > 0) {
+  //     rotate = 360 + corner > 360 ? 0 + corner : 360 + corner;
+  //   } else {
+  //     rotate = 180 - corner;
+  //   }
+  //   if (rotate == 360) {
+  //     rotate = 0;
+  //   }
+  //   pointToMove.x = e.clientX;
+  //   pointToMove.y = e.clientY;
+  //   currentPoint.x = packman.x;
+  //   currentPoint.y = packman.y;
+  //   packmanStates.push(STATES.rotation);
+  //   packmanStates.push(STATES.move);
+  //   packmanStates.push(STATES.idle);
+  //   window.removeEventListener("click", move);
+  // }
+
+  // let counter: number = 0;
+  // app.ticker.add(() => {
+  //   newPack.eating();
+  //   if (counter > 100000) {
+  //     counter = 0;
+  //   } else {
+  //     counter += 0.1;
+  //   }
+
+  //   packman
+  //     .clear()
+  //     .arc(
+  //       0,
+  //       0,
+  //       50,
+  //       degInRad(30 - Math.abs(Math.sin(counter) * 30)),
+  //       degInRad(320 + Math.abs(Math.sin(counter) * 30)),
+  //     )
+  //     .stroke({
+  //       width: 100,
+  //       color: 0xffff00,
+  //     })
+  //     .circle(-30, -30, 20)
+  //     .fill({ color: 0x000000 })
+  //     .cut();
+
+  //   if (packmanStates.length > 0) {
+  //     switch (packmanStates[0]) {
+  //       case STATES.idle: {
+  //         window.addEventListener("click", move);
+  //         packmanStates.shift();
+  //         break;
+  //       }
+  //       case STATES.move: {
+  //         const stepX: number = currentPoint.x > pointToMove.x ? -1 : 1;
+  //         currentPoint.x += stepX;
+  //         const stepY: number = currentPoint.y > pointToMove.y ? -1 : 1;
+  //         currentPoint.y += stepY;
+  //         if (currentPoint.x != pointToMove.x) {
+  //           packman.position.set(currentPoint.x, packman.position.y);
+  //         }
+  //         if (currentPoint.y != pointToMove.y) {
+  //           packman.position.set(packman.position.x, currentPoint.y);
+  //         }
+  //         if (
+  //           packman.position.x + 10 > pointToMove.x &&
+  //           packman.position.x - 10 < pointToMove.x &&
+  //           packman.position.y + 10 > pointToMove.y &&
+  //           packman.position.y - 10 < pointToMove.y
+  //         ) {
+  //           packmanStates.shift();
+  //         }
+  //         break;
+  //       }
+  //       case STATES.rotation: {
+  //         const deg: number = (packman.rotation * 180) / Math.PI;
+  //         if (deg > rotate) {
+  //           packman.rotation = degInRad(deg - 1);
+  //         }
+  //         if (deg < rotate) {
+  //           packman.rotation = degInRad(deg + 1);
+  //         }
+  //         if (deg + 1 > rotate && deg - 1 < rotate) {
+  //           packmanStates.shift();
+  //         }
+  //       }
+  //     }
+  //   }
+  // });
 })();
-
-function degInRad(deg: number): number {
-  const rad: number = 180 / Math.PI;
-
-  return deg / rad;
-}
 
 // async function testLoads(app: Application): void {
 //   const starCount = 50;
