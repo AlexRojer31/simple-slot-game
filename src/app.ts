@@ -1,8 +1,8 @@
 import { Application, Assets, AssetsBundle, AssetsManifest } from "pixi.js";
-import { RunEventEmitter } from "./core/event-emitter/event-emitter";
+import { Emitter, RunEventEmitter } from "./core/event-emitter/event-emitter";
 import * as utils from "@pixi/utils";
-import { PackmanEaterScene } from "./scenes/packman-eater-scene";
-import { LoadScene } from "./scenes/load-scene";
+import { SceneManager } from "./core/scene-manager";
+import { SetSceneEvent } from "./core/event-emitter/custom-events/set-scene-event";
 
 let application: Application | null = null;
 
@@ -17,8 +17,11 @@ export async function Run(): Promise<void> {
 
   RunEventEmitter();
 
-  new PackmanEaterScene();
-  new LoadScene();
+  new SceneManager();
+  Emitter().emit(
+    SetSceneEvent.NAME,
+    new SetSceneEvent({ sceneName: "PackmanEaterScene" }),
+  );
 }
 
 async function init(application: Application): Promise<void> {

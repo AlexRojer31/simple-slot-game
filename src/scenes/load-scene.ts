@@ -1,10 +1,8 @@
 import { Assets, Container, Sprite } from "pixi.js";
 import { app } from "../app";
-import { Emitter } from "../core/event-emitter/event-emitter";
-import { BundleLoadedEvent } from "../core/event-emitter/custom-events/bundle-loaded-event";
-import { ShowLoadedSceneEvent } from "../core/event-emitter/custom-events/show-loaded-scene-event";
+import { IScene } from "../core/scene-manager";
 
-export class LoadScene extends Container {
+export class LoadScene extends Container implements IScene {
   private mountain!: Sprite;
   private moon!: Sprite;
 
@@ -14,11 +12,6 @@ export class LoadScene extends Container {
     const result: Promise<void> = this.loadSecond();
     result.then(() => {
       this.addChild(this.mountain, this.moon);
-
-      Emitter().emit(
-        BundleLoadedEvent.NAME,
-        new BundleLoadedEvent({ bandleName: "backgrounds" }),
-      );
     });
   }
 
@@ -34,9 +27,13 @@ export class LoadScene extends Container {
     this.moon.position.set(30, 30);
   }
 
-  private subscribes(): void {
-    Emitter().addListener(ShowLoadedSceneEvent.NAME, () => {
-      app().stage.addChild(this);
-    });
+  load(): void {
+    app().stage.addChild(this);
   }
+
+  unload(): void {
+    this.destroy();
+  }
+
+  private subscribes(): void {}
 }

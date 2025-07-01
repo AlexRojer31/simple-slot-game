@@ -1,12 +1,10 @@
-import { Container, Text } from "pixi.js";
+import { Container } from "pixi.js";
 import { StarComponent } from "../components/star-component";
 import { PackmanComponent } from "../components/packman-component";
 import { app } from "../app";
-import { Emitter } from "../core/event-emitter/event-emitter";
-import { BundleLoadedEvent } from "../core/event-emitter/custom-events/bundle-loaded-event";
-import { ShowLoadedSceneEvent } from "../core/event-emitter/custom-events/show-loaded-scene-event";
+import { IScene } from "../core/scene-manager";
 
-export class PackmanEaterScene extends Container {
+export class PackmanEaterScene extends Container implements IScene {
   private stars: StarComponent[] = [];
   private packman!: PackmanComponent;
 
@@ -18,40 +16,38 @@ export class PackmanEaterScene extends Container {
 
     this.generateStars();
     this.generatePackman();
+  }
 
+  load(): void {
     app().stage.addChild(this);
     app().ticker.add(() => {
       this.animate();
     });
   }
+  unload(): void {
+    this.destroy();
+  }
 
   private subscribes(): void {
-    Emitter().addListener(BundleLoadedEvent.NAME, (e: BundleLoadedEvent) => {
-      if (e.data.bandleName == "backgrounds") {
-        setTimeout(() => {
-          const loadedMessage = new Text({
-            text: "Загружен новый экранчеГ",
-            style: {
-              fill: "#ffffff",
-              fontSize: 36,
-              fontFamily: "MyFont",
-            },
-            anchor: 0.5,
-            x: app().screen.width / 2,
-            y: 100,
-          });
-          loadedMessage.eventMode = "static";
-          loadedMessage.on("pointerdown", () => {
-            Emitter().emit(ShowLoadedSceneEvent.NAME);
-          });
-          this.addChild(loadedMessage);
-        }, 3000);
-      }
-    });
-
-    Emitter().addListener(ShowLoadedSceneEvent.NAME, () => {
-      this.destroy();
-    });
+    // Emitter().addListener(BundleLoadedEvent.NAME, (e: BundleLoadedEvent) => {
+    //   if (e.data.bandleName == "backgrounds") {
+    //     setTimeout(() => {
+    //       const loadedMessage = new Text({
+    //         text: "Загружен новый экранчеГ",
+    //         style: {
+    //           fill: "#ffffff",
+    //           fontSize: 36,
+    //           fontFamily: "MyFont",
+    //         },
+    //         anchor: 0.5,
+    //         x: app().screen.width / 2,
+    //         y: 100,
+    //       });
+    //       loadedMessage.eventMode = "static";
+    //       this.addChild(loadedMessage);
+    //     }, 3000);
+    //   }
+    // });
   }
 
   private generatePackman(): void {
