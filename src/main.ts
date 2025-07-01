@@ -42,11 +42,13 @@ import { Packman } from "./components/packman";
   scene.hitArea = app.screen;
   scene.eventMode = "static";
 
+  const stars: Star[] = [];
   const starCount = 30;
   for (let index = 0; index < starCount; index++) {
     const x = (index * Math.random() * app.screen.width) % app.screen.width;
     const y = (index * Math.random() * app.screen.height) % app.screen.height;
     const star = new Star(x, y);
+    stars.push(star);
     scene.addChild(star);
   }
 
@@ -64,6 +66,11 @@ import { Packman } from "./components/packman";
   app.ticker.add(() => {
     newPack.eating();
     newPack.mooving();
+    stars.forEach((s: Star) => {
+      if (newPack.contains(s.getStarX(), s.getStarY())) {
+        s.destroyStar();
+      }
+    });
   });
 })();
 

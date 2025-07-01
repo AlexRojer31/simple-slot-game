@@ -53,6 +53,15 @@ export class Packman extends Container {
     this.statesSteps.push(STATES.idle);
   }
 
+  public contains(x: number, y: number): boolean {
+    const isXInArea =
+      x > this.x - this.width / 2 && x < this.x + this.width / 2;
+    const isYInArea =
+      y > this.y - this.height / 2 && y < this.y + this.height / 2;
+
+    return isXInArea && isYInArea;
+  }
+
   public eating(): void {
     if (this.eatingCounter > 100000) {
       this.eatingCounter = 0;
