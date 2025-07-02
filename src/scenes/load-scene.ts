@@ -1,4 +1,4 @@
-import { Assets, Container, Sprite } from "pixi.js";
+import { Container, Sprite } from "pixi.js";
 import { app } from "../app";
 import { IScene } from "../core/scene-manager";
 import { Emitter } from "../core/event-emitter/event-emitter";
@@ -11,20 +11,17 @@ export class LoadScene extends Container implements IScene {
   constructor() {
     super();
     this.subscribes();
-    const result: Promise<void> = this.loadSecond();
-    result.then(() => {
-      this.addChild(this.mountain, this.moon);
-    });
+    this.loadSecond();
+    this.addChild(this.mountain, this.moon);
   }
 
-  private async loadSecond(): Promise<void> {
-    const commonAssets = await Assets.loadBundle("backgrounds");
-    this.mountain = Sprite.from(commonAssets.mountain);
+  private loadSecond(): void {
+    this.mountain = Sprite.from("mountain");
     this.mountain.width = app().screen.width;
     this.mountain.height = (app().screen.height * 2) / 3;
     this.mountain.position.set(0, 400);
 
-    this.moon = Sprite.from(commonAssets.moon);
+    this.moon = Sprite.from("moon");
     this.moon.tint = 0xff0000;
     this.moon.position.set(30, 30);
     this.moon.eventMode = "static";
