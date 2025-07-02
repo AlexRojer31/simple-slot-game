@@ -8,7 +8,11 @@ export interface IScene {
   unload(): void;
 }
 
-export class SceneManager {
+export function RunSceneManager(): void {
+  new SceneManager();
+}
+
+class SceneManager {
   private scenes: Map<string, IScene> = new Map();
   private currentScene: IScene | null = null;
 

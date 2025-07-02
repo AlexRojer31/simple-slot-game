@@ -1,8 +1,9 @@
 import { Application, Assets, AssetsBundle, AssetsManifest } from "pixi.js";
 import { Emitter, RunEventEmitter } from "./core/event-emitter/event-emitter";
 import * as utils from "@pixi/utils";
-import { SceneManager } from "./core/scene-manager";
+import { RunSceneManager } from "./core/scene-manager";
 import { SetSceneEvent } from "./core/event-emitter/custom-events/set-scene-event";
+import { RunBandleLoader } from "./core/bandle-loader";
 
 let application: Application | null = null;
 
@@ -16,8 +17,9 @@ export async function Run(): Promise<void> {
   await loadBandles();
 
   RunEventEmitter();
+  RunSceneManager();
+  RunBandleLoader();
 
-  new SceneManager();
   Emitter().emit(
     SetSceneEvent.NAME,
     new SetSceneEvent({ sceneName: "PackmanEaterScene" }),
