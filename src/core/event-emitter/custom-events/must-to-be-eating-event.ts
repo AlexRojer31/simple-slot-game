@@ -4,7 +4,7 @@ interface IMustToBeEatingEvent {
 }
 
 export class MustToBeEatingEvent {
-  public static NAME: string = "nustToBeEating";
+  public static NAME: string = "mustToBeEating";
   public data!: IMustToBeEatingEvent;
   constructor(data: IMustToBeEatingEvent) {
     this.data = data;
