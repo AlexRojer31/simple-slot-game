@@ -3,7 +3,7 @@ import {
   Assets,
   AssetsBundle,
   AssetsManifest,
-  Graphics,
+  // Graphics,
 } from "pixi.js";
 import { Emitter, RunEventEmitter } from "./core/event-emitter/event-emitter";
 import * as utils from "@pixi/utils";
@@ -31,7 +31,7 @@ export async function Run(): Promise<void> {
     new SetSceneEvent({ sceneName: "PackmanEaterScene" }),
   );
 
-  loadTestComponent(application);
+  // loadTestComponent(application);
 }
 
 async function init(application: Application): Promise<void> {
@@ -65,9 +65,9 @@ async function loadBandles(): Promise<void> {
   );
 }
 
-async function loadTestComponent(application: Application): Promise<void> {
-  const hex: Graphics = new Graphics()
-    .rect(0, 0, 100, 100)
-    .fill({ color: "red" });
-  application.stage.addChild(hex);
-}
+// async function loadTestComponent(application: Application): Promise<void> {
+//   const hex: Graphics = new Graphics()
+//     .rect(0, 0, 100, 100)
+//     .fill({ color: "red" });
+//   application.stage.addChild(hex);
+// }
