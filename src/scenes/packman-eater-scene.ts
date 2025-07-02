@@ -1,4 +1,4 @@
-import { Container, Text } from "pixi.js";
+import { Container, Text, Ticker } from "pixi.js";
 import { StarComponent } from "../components/star-component";
 import { PackmanComponent } from "../components/packman-component";
 import { app } from "../app";
@@ -9,6 +9,7 @@ import { SetSceneEvent } from "../core/event-emitter/custom-events/set-scene-eve
 export class PackmanEaterScene extends Container implements IScene {
   private stars: StarComponent[] = [];
   private packman!: PackmanComponent;
+  private ticker: Ticker = new Ticker();
 
   constructor() {
     super();
@@ -40,17 +41,20 @@ export class PackmanEaterScene extends Container implements IScene {
     this.addChild(loadedMessage);
 
     app().stage.addChild(this);
-    app().ticker.add(() => {
+
+    this.ticker.add(() => {
       this.animate();
     });
   }
 
   load(): void {
     this.visible = true;
+    this.ticker.start();
   }
 
   unload(): void {
     this.visible = false;
+    this.ticker.stop();
   }
 
   private subscribes(): void {}
