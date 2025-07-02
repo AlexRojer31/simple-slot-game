@@ -40,19 +40,19 @@ export class PackmanEaterScene extends Container implements IScene {
     });
     this.addChild(loadedMessage);
 
-    app().stage.addChild(this);
-
     this.ticker.add(() => {
       this.animate();
     });
   }
 
   load(): void {
+    app().stage.addChild(this);
     this.visible = true;
     this.ticker.start();
   }
 
   unload(): void {
+    app().stage.removeChild(this);
     this.visible = false;
     this.ticker.stop();
   }

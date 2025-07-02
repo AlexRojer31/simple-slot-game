@@ -14,7 +14,6 @@ export class LoadScene extends Container implements IScene {
     const result: Promise<void> = this.loadSecond();
     result.then(() => {
       this.addChild(this.mountain, this.moon);
-      app().stage.addChild(this);
     });
   }
 
@@ -38,10 +37,12 @@ export class LoadScene extends Container implements IScene {
   }
 
   load(): void {
+    app().stage.addChild(this);
     this.visible = true;
   }
 
   unload(): void {
+    app().stage.removeChild(this);
     this.visible = false;
   }
 
