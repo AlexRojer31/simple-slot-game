@@ -22,11 +22,13 @@ export class BandleLoader {
 
   private subscribes(): void {
     Emitter().addListener(LoadBandleEvent.NAME, (e: LoadBandleEvent) => {
-      this.load(e.data.bandleName).then(() => {
-        Emitter().emit(
-          BandleLoadedEvent.NAME,
-          new BandleLoadedEvent({ bandleName: e.data.bandleName }),
-        );
+      this.load(e.data.bandleName).then((result: boolean) => {
+        if (result) {
+          Emitter().emit(
+            BandleLoadedEvent.NAME,
+            new BandleLoadedEvent({ bandleName: e.data.bandleName }),
+          );
+        }
       });
     });
 
@@ -45,6 +47,7 @@ export class BandleLoader {
     const asset = await Assets.loadBundle(bandleName);
     if (asset) {
       this.loadedBandles.set(bandleName, BANDLE_STATES.loaded);
+      return true;
     }
 
     return false;
