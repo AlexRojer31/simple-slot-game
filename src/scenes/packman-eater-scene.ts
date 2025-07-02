@@ -46,25 +46,27 @@ export class PackmanEaterScene extends Container implements IScene {
   private subscribes(): void {
     Emitter().addListener(BandleLoadedEvent.NAME, (e: BandleLoadedEvent) => {
       if (e.data.bandleName == "backgrounds") {
-        const loadedMessage = new Text({
-          text: "Загрузить другую сцену",
-          style: {
-            fill: "#ffffff",
-            fontSize: 36,
-            fontFamily: "MyFont",
-          },
-          anchor: 0.5,
-          x: app().screen.width / 2,
-          y: 100,
-        });
-        loadedMessage.eventMode = "static";
-        loadedMessage.on("pointertap", () => {
-          Emitter().emit(
-            SetSceneEvent.NAME,
-            new SetSceneEvent({ sceneName: "LoadScene" }),
-          );
-        });
-        this.addChild(loadedMessage);
+        setTimeout(() => {
+          const loadedMessage = new Text({
+            text: "Загрузить другую сцену",
+            style: {
+              fill: "#ffffff",
+              fontSize: 36,
+              fontFamily: "MyFont",
+            },
+            anchor: 0.5,
+            x: app().screen.width / 2,
+            y: 100,
+          });
+          loadedMessage.eventMode = "static";
+          loadedMessage.on("pointertap", () => {
+            Emitter().emit(
+              SetSceneEvent.NAME,
+              new SetSceneEvent({ sceneName: "LoadScene" }),
+            );
+          });
+          this.addChild(loadedMessage);
+        }, 3000);
       }
     });
   }
