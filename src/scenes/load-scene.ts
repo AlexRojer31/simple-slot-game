@@ -86,7 +86,7 @@ export class LoadScene extends Container implements IScene {
           this.addChild(this.loadedMessage);
 
           this.movePlanet = true;
-        }, 0);
+        }, 3000);
       }
     });
   }

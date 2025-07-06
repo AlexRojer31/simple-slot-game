@@ -70,7 +70,7 @@ export class PackmanEaterScene extends Container implements IScene {
             );
           });
           this.addChild(loadedMessage);
-        }, 0);
+        }, 3000);
       }
     });
   }
