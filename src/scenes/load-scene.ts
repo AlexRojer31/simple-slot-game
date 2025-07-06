@@ -15,11 +15,11 @@ import { BandleLoadedEvent } from "../core/event-emitter/custom-events/bandle-lo
 
 export class LoadScene extends Container implements IScene {
   private planet!: Sprite;
-  private mountain!: Sprite;
   private moon!: Sprite;
   private ticker: Ticker = new Ticker();
   private movePlanet: boolean = false;
   private loadedMessage!: Text;
+  private planetScale: number = 1;
 
   constructor() {
     super();
@@ -33,7 +33,7 @@ export class LoadScene extends Container implements IScene {
     );
     this.subscribes();
     this.loadSecond();
-    this.addChild(this.mountain, this.moon, this.planet);
+    this.addChild(this.moon, this.planet);
 
     this.ticker.add((ticker: Ticker) => {
       this.animate(ticker);
@@ -42,19 +42,29 @@ export class LoadScene extends Container implements IScene {
 
   private loadSecond(): void {
     this.planet = Sprite.from("planet");
-    this.planet.position.set(app().screen.width / 2, 200);
-    this.planet.scale.set(2);
-    this.planet.position.set(-100, 50);
-    this.planet.rotation = 5 / (180 / Math.PI);
-
-    this.mountain = Sprite.from("mountain");
-    this.mountain.position.set(650, 150);
+    this.planet.anchor.set(0.5);
+    this.planet.position.set(app().screen.width / 2, app().screen.height / 2);
 
     this.moon = Sprite.from("moon");
     this.moon.tint = 0xff0000;
     this.moon.rotation = 2;
     this.moon.anchor.set(0.5);
-    this.moon.position.set(100, 200);
+    this.moon.position.set(100, 100);
+
+    this.loadedMessage = new Text({
+      text: "До слота еще надо добраться...",
+      style: {
+        fill: "#ffffff",
+        fontSize: 36,
+        fontFamily: "MyFont",
+        wordWrap: true,
+        wordWrapWidth: 220,
+      },
+      x: app().screen.width - 230,
+      y: 20,
+    });
+    this.loadedMessage.zIndex = 100;
+    this.addChild(this.loadedMessage);
   }
 
   load(): void {
@@ -73,18 +83,6 @@ export class LoadScene extends Container implements IScene {
     Emitter().addListener(BandleLoadedEvent.NAME, (e: BandleLoadedEvent) => {
       if (e.data.bandleName == "textures") {
         setTimeout(() => {
-          this.loadedMessage = new Text({
-            text: "Надо пройтись до слота",
-            style: {
-              fill: "#ffffff",
-              fontSize: 36,
-              fontFamily: "MyFont",
-            },
-            x: 20,
-            y: 20,
-          });
-          this.addChild(this.loadedMessage);
-
           this.movePlanet = true;
         }, 3000);
       }
@@ -95,12 +93,12 @@ export class LoadScene extends Container implements IScene {
     this.moon.rotation += ticker.deltaTime / 180;
 
     if (this.movePlanet) {
-      this.planet.x -= ticker.deltaTime;
-      this.planet.y -= ticker.deltaTime;
-      if (this.planet.x < -app().screen.width / 4) {
+      this.planet.scale.set((this.planetScale += ticker.deltaTime / 200));
+      console.log(this.planetScale);
+      if (this.planetScale > 1.5) {
         this.removeChild(this.loadedMessage);
       }
-      if (this.planet.x < -app().screen.width / 3) {
+      if (this.planetScale > 4) {
         this.movePlanet = false;
         this.generateHexField();
       }
