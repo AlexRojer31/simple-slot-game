@@ -84,7 +84,8 @@ export class LoadScene extends Container implements IScene {
       if (e.data.bandleName == "textures") {
         setTimeout(() => {
           this.movePlanet = true;
-        }, 3000);
+        }, 0);
+        this.generateHexField();
       }
     });
   }
@@ -93,6 +94,7 @@ export class LoadScene extends Container implements IScene {
     this.moon.rotation += ticker.deltaTime / 180;
 
     if (this.movePlanet) {
+      this.planet.x -= ticker.deltaTime;
       this.planet.scale.set((this.planetScale += ticker.deltaTime / 200));
       console.log(this.planetScale);
       if (this.planetScale > 1.5) {
@@ -100,33 +102,34 @@ export class LoadScene extends Container implements IScene {
       }
       if (this.planetScale > 4) {
         this.movePlanet = false;
-        this.generateHexField();
       }
     }
   }
 
   private async generateHexField(): Promise<void> {
-    this.getHex(50, app().screen.height - 45, "earth", "sand");
-    this.getHex(202, app().screen.height - 45, "earth", "sand");
-    this.getHex(354, app().screen.height - 45, "earth", "dirt");
+    this.getHex(0, 45, "earth", "sand");
+    this.getHex(152, 45, "earth", "sand");
+    this.getHex(304, 45, "earth", "road");
 
-    this.getHex(126, app().screen.height - 90, "earth", "sand");
-    this.getHex(278, app().screen.height - 90, "earth", "dirt");
-    this.getHex(430, app().screen.height - 90, "earth", "lava");
+    this.getHex(76, 90, "earth", "sand");
+    this.getHex(228, 90, "earth", "road");
+    this.getHex(380, 90, "earth", "road");
 
-    this.getHex(354, app().screen.height - 137, "earth", "lava");
+    this.getHex(152, 137, "earth", "dirt");
+    this.getHex(304, 137, "earth", "lava");
 
-    this.getHex(430, app().screen.height - 182, "earth", "road");
+    this.getHex(380, 182, "earth", "road");
 
-    this.getHex(430, app().screen.height - 274, "water", "swamp");
+    this.getHex(228, 274, "earth", "foothills");
+    this.getHex(380, 274, "water", "swamp");
 
-    this.getHex(508, app().screen.height - 318, "water", "sea");
+    this.getHex(304, 322, "earth", "grass");
 
-    this.getHex(508, app().screen.height - 412, "earth", "grass");
+    this.getHex(382, 365, "earth", "grass");
 
-    this.getHex(586, app().screen.height - 364, "earth", "foothills");
+    this.getHex(228, 367, "earth", "foothills");
 
-    this.getHex(586, app().screen.height - 458, "earth", "snow");
+    this.getHex(306, 412, "earth", "grass");
   }
 
   private async getHex(
