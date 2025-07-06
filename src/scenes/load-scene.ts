@@ -84,8 +84,7 @@ export class LoadScene extends Container implements IScene {
       if (e.data.bandleName == "textures") {
         setTimeout(() => {
           this.movePlanet = true;
-        }, 0);
-        this.generateHexField();
+        }, 3000);
       }
     });
   }
@@ -96,12 +95,12 @@ export class LoadScene extends Container implements IScene {
     if (this.movePlanet) {
       this.planet.x -= ticker.deltaTime;
       this.planet.scale.set((this.planetScale += ticker.deltaTime / 200));
-      console.log(this.planetScale);
       if (this.planetScale > 1.5) {
         this.removeChild(this.loadedMessage);
       }
       if (this.planetScale > 4) {
         this.movePlanet = false;
+        this.generateHexField();
       }
     }
   }
