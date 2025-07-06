@@ -1,4 +1,12 @@
-import { Container, Graphics, Sprite, Text, Ticker } from "pixi.js";
+import {
+  Assets,
+  Container,
+  Graphics,
+  Sprite,
+  Spritesheet,
+  Text,
+  Ticker,
+} from "pixi.js";
 import { app } from "../app";
 import { IScene } from "../core/scene-manager";
 import { Emitter } from "../core/event-emitter/event-emitter";
@@ -100,31 +108,41 @@ export class LoadScene extends Container implements IScene {
   }
 
   private async generateHexField(): Promise<void> {
-    this.getHex(50, app().screen.height - 45);
-    this.getHex(202, app().screen.height - 45);
-    this.getHex(354, app().screen.height - 45);
+    this.getHex(50, app().screen.height - 45, "earth", "sand");
+    this.getHex(202, app().screen.height - 45, "earth", "sand");
+    this.getHex(354, app().screen.height - 45, "earth", "sand");
 
-    this.getHex(126, app().screen.height - 90);
-    this.getHex(278, app().screen.height - 90);
-    this.getHex(430, app().screen.height - 90);
+    this.getHex(126, app().screen.height - 90, "earth", "sand");
+    this.getHex(278, app().screen.height - 90, "earth", "sand");
+    this.getHex(430, app().screen.height - 90, "earth", "sand");
 
-    this.getHex(354, app().screen.height - 137);
+    this.getHex(354, app().screen.height - 137, "earth", "sand");
 
-    this.getHex(430, app().screen.height - 182);
+    this.getHex(430, app().screen.height - 182, "earth", "sand");
 
-    this.getHex(430, app().screen.height - 274);
+    this.getHex(430, app().screen.height - 274, "water", "swamp");
 
-    this.getHex(508, app().screen.height - 318);
+    this.getHex(508, app().screen.height - 318, "water", "sea");
 
-    this.getHex(508, app().screen.height - 412);
+    this.getHex(508, app().screen.height - 412, "earth", "foothills");
 
-    this.getHex(586, app().screen.height - 364);
+    this.getHex(586, app().screen.height - 364, "earth", "foothills");
 
-    this.getHex(586, app().screen.height - 458);
+    this.getHex(586, app().screen.height - 458, "earth", "grass");
   }
 
-  private async getHex(x: number, y: number): Promise<void> {
+  private async getHex(
+    x: number,
+    y: number,
+    ground: string = "water",
+    type: string = "ice",
+  ): Promise<void> {
     const hexContainer = new Container();
+    const sprite: Sprite = Sprite.from(
+      Assets.get<Spritesheet>(ground).textures[type],
+    );
+    sprite.width = 100;
+    sprite.height = 90;
     const hex: Graphics = new Graphics()
       .moveTo(0, 0)
       .lineTo(25, -45)
@@ -132,10 +150,12 @@ export class LoadScene extends Container implements IScene {
       .lineTo(100, 0)
       .lineTo(75, 45)
       .lineTo(25, 45)
-      .fill({ color: "red" });
+      .fill("green");
 
-    hexContainer.addChild(hex);
+    sprite.mask = hex;
+    hexContainer.addChild(sprite, hex);
     hex.position.set(x, y);
-    this.addChild(hex);
+    sprite.position.set(x, y - 45);
+    this.addChild(hexContainer);
   }
 }
