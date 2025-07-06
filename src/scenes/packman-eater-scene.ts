@@ -11,6 +11,7 @@ import { BandleLoadedEvent } from "../core/event-emitter/custom-events/bandle-lo
 export class PackmanEaterScene extends Container implements IScene {
   private stars: StarComponent[] = [];
   private packman!: PackmanComponent;
+  private loaderMsg!: Text;
   private ticker: Ticker = new Ticker();
 
   constructor() {
@@ -25,6 +26,7 @@ export class PackmanEaterScene extends Container implements IScene {
 
     this.generateStars();
     this.generatePackman();
+    this.generatePreloadText();
 
     this.ticker.add(() => {
       this.animate();
@@ -47,8 +49,9 @@ export class PackmanEaterScene extends Container implements IScene {
     Emitter().addListener(BandleLoadedEvent.NAME, (e: BandleLoadedEvent) => {
       if (e.data.bandleName == "backgrounds") {
         setTimeout(() => {
+          this.removeChild(this.loaderMsg);
           const loadedMessage = new Text({
-            text: "Загрузить другую сцену",
+            text: "Наелись? Погнали!",
             style: {
               fill: "#ffffff",
               fontSize: 36,
@@ -59,6 +62,7 @@ export class PackmanEaterScene extends Container implements IScene {
             y: 100,
           });
           loadedMessage.eventMode = "static";
+          loadedMessage.cursor = "pointer";
           loadedMessage.on("pointertap", () => {
             Emitter().emit(
               SetSceneEvent.NAME,
@@ -79,6 +83,21 @@ export class PackmanEaterScene extends Container implements IScene {
       height: 50,
     });
     this.addChild(this.packman);
+  }
+
+  private generatePreloadText(): void {
+    this.loaderMsg = new Text({
+      text: "Пока мы загружаемся, отведайте звезды...",
+      style: {
+        fill: "#ffffff",
+        fontSize: 36,
+        fontFamily: "MyFont",
+      },
+      anchor: 0.5,
+      x: app().screen.width / 2,
+      y: 100,
+    });
+    this.addChild(this.loaderMsg);
   }
 
   private generateStars(): void {
