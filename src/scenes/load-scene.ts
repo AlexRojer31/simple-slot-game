@@ -100,7 +100,7 @@ export class LoadScene extends Container implements IScene {
       if (this.planet.x < -app().screen.width / 4) {
         this.removeChild(this.loadedMessage);
       }
-      if (this.planet.x < -app().screen.width / 2) {
+      if (this.planet.x < -app().screen.width / 3) {
         this.movePlanet = false;
         this.generateHexField();
       }
@@ -110,25 +110,25 @@ export class LoadScene extends Container implements IScene {
   private async generateHexField(): Promise<void> {
     this.getHex(50, app().screen.height - 45, "earth", "sand");
     this.getHex(202, app().screen.height - 45, "earth", "sand");
-    this.getHex(354, app().screen.height - 45, "earth", "sand");
+    this.getHex(354, app().screen.height - 45, "earth", "dirt");
 
     this.getHex(126, app().screen.height - 90, "earth", "sand");
-    this.getHex(278, app().screen.height - 90, "earth", "sand");
-    this.getHex(430, app().screen.height - 90, "earth", "sand");
+    this.getHex(278, app().screen.height - 90, "earth", "dirt");
+    this.getHex(430, app().screen.height - 90, "earth", "lava");
 
-    this.getHex(354, app().screen.height - 137, "earth", "sand");
+    this.getHex(354, app().screen.height - 137, "earth", "lava");
 
-    this.getHex(430, app().screen.height - 182, "earth", "sand");
+    this.getHex(430, app().screen.height - 182, "earth", "road");
 
     this.getHex(430, app().screen.height - 274, "water", "swamp");
 
     this.getHex(508, app().screen.height - 318, "water", "sea");
 
-    this.getHex(508, app().screen.height - 412, "earth", "foothills");
+    this.getHex(508, app().screen.height - 412, "earth", "grass");
 
     this.getHex(586, app().screen.height - 364, "earth", "foothills");
 
-    this.getHex(586, app().screen.height - 458, "earth", "grass");
+    this.getHex(586, app().screen.height - 458, "earth", "snow");
   }
 
   private async getHex(
