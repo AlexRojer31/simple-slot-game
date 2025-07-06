@@ -10,6 +10,7 @@
     "dev": "vite"
   },
   "dependencies": {
+    "@esotericsoftware/spine-pixi-v8": "~4.2.0",
     "@pixi/utils": "^7.4.3",
     "pixi.js": "^8.8.1"
   },

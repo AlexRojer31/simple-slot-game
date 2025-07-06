@@ -12,14 +12,19 @@ import { IScene } from "../core/scene-manager";
 import { Emitter } from "../core/event-emitter/event-emitter";
 import { LoadBandleEvent } from "../core/event-emitter/custom-events/load-bundle-event";
 import { BandleLoadedEvent } from "../core/event-emitter/custom-events/bandle-loaded-event";
+import { LoadExternalBandleEvent } from "../core/event-emitter/custom-events/load-external-bundle-event";
+import { SpineBoy } from "../components/spine-boy-component";
 
 export class LoadScene extends Container implements IScene {
   private planet!: Sprite;
   private moon!: Sprite;
+  private custle!: Sprite;
   private ticker: Ticker = new Ticker();
   private movePlanet: boolean = false;
   private loadedMessage!: Text;
   private planetScale: number = 1;
+  private spineBoy!: SpineBoy;
+  private spineLoadCounter: number = 0;
 
   constructor() {
     super();
@@ -30,6 +35,20 @@ export class LoadScene extends Container implements IScene {
     Emitter().emit(
       LoadBandleEvent.NAME,
       new LoadBandleEvent({ bandleName: "textures" }),
+    );
+    Emitter().emit(
+      LoadExternalBandleEvent.NAME,
+      new LoadExternalBandleEvent({
+        alias: "spineSkeleton",
+        src: "https://raw.githubusercontent.com/pixijs/spine-v8/main/examples/assets/spineboy-pro.skel",
+      }),
+    );
+    Emitter().emit(
+      LoadExternalBandleEvent.NAME,
+      new LoadExternalBandleEvent({
+        alias: "spineAtlas",
+        src: "https://raw.githubusercontent.com/pixijs/spine-v8/main/examples/assets/spineboy-pma.atlas",
+      }),
     );
     this.subscribes();
     this.loadSecond();
@@ -84,7 +103,32 @@ export class LoadScene extends Container implements IScene {
       if (e.data.bandleName == "textures") {
         setTimeout(() => {
           this.movePlanet = true;
-        }, 3000);
+        }, 0);
+      }
+    });
+
+    Emitter().addListener(BandleLoadedEvent.NAME, (e: BandleLoadedEvent) => {
+      if (e.data.bandleName == "spineSkeleton") {
+        this.spineLoadCounter++;
+        if (this.spineLoadCounter == 2) {
+          console.log("spine loaded");
+        }
+      }
+    });
+
+    Emitter().addListener(BandleLoadedEvent.NAME, (e: BandleLoadedEvent) => {
+      if (e.data.bandleName == "spineAtlas") {
+        this.spineLoadCounter++;
+        if (this.spineLoadCounter == 2) {
+          this.spineBoy = new SpineBoy();
+          this.spineBoy.view.x = 50;
+          this.spineBoy.view.y = 70;
+          this.spineBoy.spine.scale.set(0.1);
+          this.spineBoy.view.zIndex = 100;
+
+          this.spineBoy.view.visible = false;
+          this.addChild(this.spineBoy.view);
+        }
       }
     });
   }
@@ -99,8 +143,11 @@ export class LoadScene extends Container implements IScene {
         this.removeChild(this.loadedMessage);
       }
       if (this.planetScale > 4) {
-        this.movePlanet = false;
-        this.generateHexField();
+        if (this.spineLoadCounter == 2) {
+          this.generateHexField();
+          this.movePlanet = false;
+          this.spineBoy.view.visible = true;
+        }
       }
     }
   }
@@ -129,6 +176,12 @@ export class LoadScene extends Container implements IScene {
     this.getHex(228, 367, "earth", "foothills");
 
     this.getHex(306, 412, "earth", "grass");
+
+    this.custle = Sprite.from("custle");
+    this.custle.anchor.set(0.5);
+    this.custle.scale.set(0.4);
+    this.custle.position.set(200, 300);
+    this.addChild(this.custle);
   }
 
   private async getHex(

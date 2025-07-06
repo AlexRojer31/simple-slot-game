@@ -3,6 +3,8 @@ import { LoadBandleEvent } from "./event-emitter/custom-events/load-bundle-event
 import { Emitter } from "./event-emitter/event-emitter";
 import { BandleLoadedEvent } from "./event-emitter/custom-events/bandle-loaded-event";
 import { UnloadBandleEvent } from "./event-emitter/custom-events/unload-bundle-event";
+import { LoadExternalBandleEvent } from "./event-emitter/custom-events/load-external-bundle-event";
+import "@esotericsoftware/spine-pixi-v8";
 
 export function RunBandleLoader(): void {
   new BandleLoader();
@@ -35,6 +37,39 @@ export class BandleLoader {
     Emitter().addListener(UnloadBandleEvent.NAME, (e: UnloadBandleEvent) => {
       this.unload(e.data.bandleName);
     });
+
+    Emitter().addListener(
+      LoadExternalBandleEvent.NAME,
+      (e: LoadExternalBandleEvent) => {
+        this.loadExternal(e.data.alias, e.data.src).then((result: boolean) => {
+          if (result) {
+            Emitter().emit(
+              BandleLoadedEvent.NAME,
+              new BandleLoadedEvent({ bandleName: e.data.alias }),
+            );
+          }
+        });
+      },
+    );
+  }
+
+  private async loadExternal(alias: string, src: string): Promise<boolean> {
+    if (
+      this.loadedBandles.has(alias) &&
+      this.loadedBandles.get(alias) === BANDLE_STATES.loaded
+    ) {
+      return true;
+    }
+    const asset = await Assets.load({
+      alias,
+      src,
+    });
+    if (asset) {
+      this.loadedBandles.set(alias, BANDLE_STATES.loaded);
+      return true;
+    }
+
+    return false;
   }
 
   private async load(bandleName: string): Promise<boolean> {
