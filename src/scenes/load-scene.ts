@@ -1,19 +1,35 @@
-import { Container, Sprite } from "pixi.js";
+import { Container, Graphics, Sprite, Text, Ticker } from "pixi.js";
 import { app } from "../app";
 import { IScene } from "../core/scene-manager";
 import { Emitter } from "../core/event-emitter/event-emitter";
-import { SetSceneEvent } from "../core/event-emitter/custom-events/set-scene-event";
+import { LoadBandleEvent } from "../core/event-emitter/custom-events/load-bundle-event";
+import { BandleLoadedEvent } from "../core/event-emitter/custom-events/bandle-loaded-event";
 
 export class LoadScene extends Container implements IScene {
   private planet!: Sprite;
   private mountain!: Sprite;
   private moon!: Sprite;
+  private ticker: Ticker = new Ticker();
+  private movePlanet: boolean = false;
+  private loadedMessage!: Text;
 
   constructor() {
     super();
+    Emitter().emit(
+      LoadBandleEvent.NAME,
+      new LoadBandleEvent({ bandleName: "common" }),
+    );
+    Emitter().emit(
+      LoadBandleEvent.NAME,
+      new LoadBandleEvent({ bandleName: "textures" }),
+    );
     this.subscribes();
     this.loadSecond();
     this.addChild(this.mountain, this.moon, this.planet);
+
+    this.ticker.add((ticker: Ticker) => {
+      this.animate(ticker);
+    });
   }
 
   private loadSecond(): void {
@@ -28,25 +44,98 @@ export class LoadScene extends Container implements IScene {
 
     this.moon = Sprite.from("moon");
     this.moon.tint = 0xff0000;
-    this.moon.position.set(50, 50);
-    this.moon.eventMode = "static";
-    this.moon.on("pointertap", () => {
-      Emitter().emit(
-        SetSceneEvent.NAME,
-        new SetSceneEvent({ sceneName: "PackmanEaterScene" }),
-      );
-    });
+    this.moon.rotation = 2;
+    this.moon.anchor.set(0.5);
+    this.moon.position.set(100, 200);
   }
 
   load(): void {
     app().stage.addChild(this);
     this.visible = true;
+    this.ticker.start();
   }
 
   unload(): void {
     app().stage.removeChild(this);
     this.visible = false;
+    this.ticker.stop();
   }
 
-  private subscribes(): void {}
+  private subscribes(): void {
+    Emitter().addListener(BandleLoadedEvent.NAME, (e: BandleLoadedEvent) => {
+      if (e.data.bandleName == "textures") {
+        setTimeout(() => {
+          this.loadedMessage = new Text({
+            text: "Надо пройтись до слота",
+            style: {
+              fill: "#ffffff",
+              fontSize: 36,
+              fontFamily: "MyFont",
+            },
+            x: 20,
+            y: 20,
+          });
+          this.addChild(this.loadedMessage);
+
+          this.movePlanet = true;
+        }, 0);
+      }
+    });
+  }
+
+  private animate(ticker: Ticker): void {
+    this.moon.rotation += ticker.deltaTime / 180;
+
+    if (this.movePlanet) {
+      this.planet.x -= ticker.deltaTime;
+      this.planet.y -= ticker.deltaTime;
+      if (this.planet.x < -app().screen.width / 4) {
+        this.removeChild(this.loadedMessage);
+      }
+      if (this.planet.x < -app().screen.width / 2) {
+        this.movePlanet = false;
+        this.generateHexField();
+      }
+    }
+  }
+
+  private async generateHexField(): Promise<void> {
+    this.getHex(50, app().screen.height - 45);
+    this.getHex(202, app().screen.height - 45);
+    this.getHex(354, app().screen.height - 45);
+
+    this.getHex(126, app().screen.height - 90);
+    this.getHex(278, app().screen.height - 90);
+    this.getHex(430, app().screen.height - 90);
+
+    this.getHex(354, app().screen.height - 137);
+
+    this.getHex(430, app().screen.height - 182);
+
+    this.getHex(430, app().screen.height - 274);
+
+    this.getHex(508, app().screen.height - 318);
+
+    this.getHex(508, app().screen.height - 412);
+
+    this.getHex(586, app().screen.height - 364);
+
+    this.getHex(586, app().screen.height - 458);
+  }
+
+  private async getHex(x: number, y: number): Promise<void> {
+    const hexContainer = new Container();
+    const hex: Graphics = new Graphics()
+      .moveTo(0, 0)
+      .lineTo(25, -45)
+      .lineTo(75, -45)
+      .lineTo(100, 0)
+      .lineTo(75, 45)
+      .lineTo(25, 45)
+      .fill({ color: "red" });
+
+    hexContainer.addChild(hex);
+    hex.position.set(x, y);
+    this.addChild(hex);
+  }
 }

@@ -1,10 +1,4 @@
-import {
-  Application,
-  Assets,
-  AssetsBundle,
-  AssetsManifest,
-  // Graphics,
-} from "pixi.js";
+import { Application, Assets, AssetsBundle, AssetsManifest } from "pixi.js";
 import { Emitter, RunEventEmitter } from "./core/event-emitter/event-emitter";
 import * as utils from "@pixi/utils";
 import { RunSceneManager } from "./core/scene-manager";
@@ -30,8 +24,6 @@ export async function Run(): Promise<void> {
     SetSceneEvent.NAME,
     new SetSceneEvent({ sceneName: "PackmanEaterScene" }),
   );
-
-  // loadTestComponent(application);
 }
 
 async function init(application: Application): Promise<void> {
@@ -64,10 +56,3 @@ async function loadBandles(): Promise<void> {
     manifest.bundles.map((b: AssetsBundle) => b.name),
   );
 }
-
-// async function loadTestComponent(application: Application): Promise<void> {
-//   const hex: Graphics = new Graphics()
-//     .rect(0, 0, 100, 100)
-//     .fill({ color: "red" });
-//   application.stage.addChild(hex);
-// }
