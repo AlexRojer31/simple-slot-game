@@ -17,12 +17,17 @@ import { SpineBoy } from "../components/spine-boy-component";
 import { SpineBoyMoveEvent } from "../core/event-emitter/custom-events/spine-boy-move-event";
 import { SpineBoyIdleEvent } from "../core/event-emitter/custom-events/spine-boy-idle-event";
 
+enum SPINE_STATE {
+  idle = 0,
+  move,
+}
 export class LoadScene extends Container implements IScene {
   private planet!: Sprite;
   private moon!: Sprite;
   private custle!: Sprite;
   private ticker: Ticker = new Ticker();
   private movePlanet: boolean = false;
+  private spineBoyState: number = SPINE_STATE.idle;
   private loadedMessage!: Text;
   private planetScale: number = 1;
   private spineBoy!: SpineBoy;
@@ -147,8 +152,6 @@ export class LoadScene extends Container implements IScene {
     this.spineBoy = new SpineBoy();
     this.spineBoy.view.x = 50;
     this.spineBoy.view.y = 75;
-    // this.spineBoy.view.x = 125;
-    // this.spineBoy.view.y = 122;
     this.spineBoy.view.height = 90;
     this.spineBoy.view.width = 70;
     this.spineBoy.view.zIndex = 100;
@@ -159,6 +162,42 @@ export class LoadScene extends Container implements IScene {
 
   private animate(ticker: Ticker): void {
     this.moon.rotation += ticker.deltaTime / 180;
+
+    if (this.spineBoyState == SPINE_STATE.move) {
+      const stepX: number =
+        this.spineBoy.view.x > this.spineBoy.nextX! ? -1 : 1;
+      this.spineBoy.view.x += stepX;
+      const stepY: number =
+        this.spineBoy.view.y > this.spineBoy.nextY! ? -1 : 1;
+      this.spineBoy.view.y += stepY;
+      if (this.spineBoy.view.x != this.spineBoy.nextX) {
+        this.spineBoy.view.position.set(
+          this.spineBoy.view.x,
+          this.spineBoy.view.position.y,
+        );
+      }
+      if (this.spineBoy.view.y != this.spineBoy.nextY) {
+        this.spineBoy.view.position.set(
+          this.spineBoy.view.position.x,
+          this.spineBoy.view.y,
+        );
+      }
+      if (
+        this.spineBoy.view.x + 5 > this.spineBoy.nextX &&
+        this.spineBoy.view.x - 5 < this.spineBoy.nextX &&
+        this.spineBoy.view.y + 5 > this.spineBoy.nextY &&
+        this.spineBoy.view.y - 5 < this.spineBoy.nextY
+      ) {
+        Emitter().emit(
+          SpineBoyIdleEvent.NAME,
+          new SpineBoyIdleEvent({
+            x: 0,
+            y: 0,
+          }),
+        );
+        this.spineBoyState = SPINE_STATE.idle;
+      }
+    }
 
     if (this.movePlanet) {
       this.planet.x -= ticker.deltaTime;
@@ -226,7 +265,6 @@ export class LoadScene extends Container implements IScene {
       .fill("green");
 
     hexContainer.eventMode = "static";
-    hexContainer.cursor = "pointer";
     hexContainer.addEventListener("pointertap", () => {
       const catetX = hex.x + 50 - this.spineBoy.view.x;
       const catetY = hex.y - (this.spineBoy.view.y - 30);
@@ -241,15 +279,7 @@ export class LoadScene extends Container implements IScene {
             y: hex.y + 30,
           }),
         );
-      }
-      if (range < 50) {
-        Emitter().emit(
-          SpineBoyIdleEvent.NAME,
-          new SpineBoyIdleEvent({
-            x: 0,
-            y: 0,
-          }),
-        );
+        this.spineBoyState = SPINE_STATE.move;
       }
     });
     hexContainer.addEventListener("pointerover", () => {
@@ -259,10 +289,12 @@ export class LoadScene extends Container implements IScene {
         Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
       );
       if (50 < range && range < 100) {
+        hexContainer.cursor = "pointer";
         hexContainer.alpha = 0.7;
       }
     });
     hexContainer.addEventListener("pointerout", () => {
+      hexContainer.cursor = "auto";
       hexContainer.alpha = 1;
     });
     sprite.mask = hex;

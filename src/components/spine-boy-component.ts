@@ -7,6 +7,8 @@ import { SpineBoyIdleEvent } from "../core/event-emitter/custom-events/spine-boy
 export class SpineBoy {
   public view!: Container;
   public spine!: Spine;
+  public nextX: number = 50;
+  public nextY: number = 75;
   constructor() {
     this.view = new Container();
     this.spine = Spine.from({
@@ -15,7 +17,9 @@ export class SpineBoy {
     });
 
     this.view.addChild(this.spine);
-    Emitter().addListener(SpineBoyMoveEvent.NAME, () => {
+    Emitter().addListener(SpineBoyMoveEvent.NAME, (e: SpineBoyMoveEvent) => {
+      this.nextX = e.data.x;
+      this.nextY = e.data.y;
       this.spine.state.setAnimation(0, "walk", true);
     });
     Emitter().addListener(SpineBoyIdleEvent.NAME, () => {
