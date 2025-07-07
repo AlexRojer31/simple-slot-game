@@ -14,4 +14,9 @@ export class SpineBoy {
 
     this.view.addChild(this.spine);
   }
+
+  // Play the portal-in spawn animation.
+  spawn() {
+    this.spine.state.setAnimation(0, "portal");
+  }
 }

@@ -151,6 +151,7 @@ export class LoadScene extends Container implements IScene {
           this.generateHexField();
           this.movePlanet = false;
           this.spineBoy.view.visible = true;
+          this.spineBoy.spawn();
         }
       }
     }
