@@ -220,6 +220,18 @@ export class LoadScene extends Container implements IScene {
       .lineTo(25, 45)
       .fill("green");
 
+    hexContainer.eventMode = "static";
+    hexContainer.cursor = "pointer";
+    hexContainer.addEventListener("pointerover", () => {
+      console.log(hex.x + " " + this.spineBoy.view.x);
+      console.log(hex.y + " " + this.spineBoy.view.y);
+      hexContainer.alpha = 0.7;
+    });
+    hexContainer.addEventListener("pointerout", () => {
+      console.log(hex.x + " " + this.spineBoy.view.x);
+      console.log(hex.y + " " + this.spineBoy.view.y);
+      hexContainer.alpha = 1;
+    });
     sprite.mask = hex;
     hexContainer.addChild(sprite, hex);
     hex.position.set(x, y);
