@@ -6,28 +6,31 @@ import { SpineBoyIdleEvent } from "../core/event-emitter/custom-events/spine-boy
 
 export class SpineBoy {
   public view!: Container;
+  public directionalView!: Container;
   public spine!: Spine;
   public nextX: number = 50;
   public nextY: number = 75;
   constructor() {
     this.view = new Container();
+    this.directionalView = new Container();
     this.spine = Spine.from({
       skeleton: "spineSkeleton",
       atlas: "spineAtlas",
     });
 
-    this.view.addChild(this.spine);
+    this.directionalView.addChild(this.spine);
+    this.view.addChild(this.directionalView);
     Emitter().addListener(SpineBoyMoveEvent.NAME, (e: SpineBoyMoveEvent) => {
       this.nextX = e.data.x;
       this.nextY = e.data.y;
       this.spine.state.setAnimation(0, "walk", true);
+      this.directionalView.scale.x = this.nextX < this.view.x ? -1 : 1;
     });
     Emitter().addListener(SpineBoyIdleEvent.NAME, () => {
       this.spine.state.setAnimation(0, "idle", true);
     });
   }
 
-  // Play the portal-in spawn animation.
   spawn() {
     this.spine.state.setAnimation(0, "portal");
   }
