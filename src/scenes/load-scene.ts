@@ -14,6 +14,8 @@ import { LoadBandleEvent } from "../core/event-emitter/custom-events/load-bundle
 import { BandleLoadedEvent } from "../core/event-emitter/custom-events/bandle-loaded-event";
 import { LoadExternalBandleEvent } from "../core/event-emitter/custom-events/load-external-bundle-event";
 import { SpineBoy } from "../components/spine-boy-component";
+import { SpineBoyMoveEvent } from "../core/event-emitter/custom-events/spine-boy-move-event";
+import { SpineBoyIdleEvent } from "../core/event-emitter/custom-events/spine-boy-idle-event";
 
 export class LoadScene extends Container implements IScene {
   private planet!: Sprite;
@@ -225,13 +227,37 @@ export class LoadScene extends Container implements IScene {
 
     hexContainer.eventMode = "static";
     hexContainer.cursor = "pointer";
+    hexContainer.addEventListener("pointertap", () => {
+      const catetX = hex.x + 50 - this.spineBoy.view.x;
+      const catetY = hex.y - (this.spineBoy.view.y - 30);
+      const range = Math.round(
+        Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
+      );
+      if (50 < range && range < 100) {
+        Emitter().emit(
+          SpineBoyMoveEvent.NAME,
+          new SpineBoyMoveEvent({
+            x: hex.x + 50,
+            y: hex.y + 30,
+          }),
+        );
+      }
+      if (range < 50) {
+        Emitter().emit(
+          SpineBoyIdleEvent.NAME,
+          new SpineBoyIdleEvent({
+            x: 0,
+            y: 0,
+          }),
+        );
+      }
+    });
     hexContainer.addEventListener("pointerover", () => {
       const catetX = hex.x + 50 - this.spineBoy.view.x;
       const catetY = hex.y - (this.spineBoy.view.y - 30);
       const range = Math.round(
         Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
       );
-      console.log(range);
       if (50 < range && range < 100) {
         hexContainer.alpha = 0.7;
       }

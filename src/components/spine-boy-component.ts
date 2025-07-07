@@ -1,7 +1,9 @@
 import { Container } from "pixi.js";
 import { Spine } from "@esotericsoftware/spine-pixi-v8";
+import { Emitter } from "../core/event-emitter/event-emitter";
+import { SpineBoyMoveEvent } from "../core/event-emitter/custom-events/spine-boy-move-event";
+import { SpineBoyIdleEvent } from "../core/event-emitter/custom-events/spine-boy-idle-event";
 
-// Class for handling the character Spine and its animations.
 export class SpineBoy {
   public view!: Container;
   public spine!: Spine;
@@ -13,6 +15,12 @@ export class SpineBoy {
     });
 
     this.view.addChild(this.spine);
+    Emitter().addListener(SpineBoyMoveEvent.NAME, () => {
+      this.spine.state.setAnimation(0, "walk", true);
+    });
+    Emitter().addListener(SpineBoyIdleEvent.NAME, () => {
+      this.spine.state.setAnimation(0, "idle", true);
+    });
   }
 
   // Play the portal-in spawn animation.
