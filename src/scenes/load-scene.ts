@@ -16,6 +16,7 @@ import { LoadExternalBandleEvent } from "../core/event-emitter/custom-events/loa
 import { SpineBoy } from "../components/spine-boy-component";
 import { SpineBoyMoveEvent } from "../core/event-emitter/custom-events/spine-boy-move-event";
 import { SpineBoyIdleEvent } from "../core/event-emitter/custom-events/spine-boy-idle-event";
+import { SetSceneEvent } from "../core/event-emitter/custom-events/set-scene-event";
 
 enum SPINE_STATE {
   idle = 0,
@@ -147,6 +148,25 @@ export class LoadScene extends Container implements IScene {
         if (this.spineLoadCounter == 2) {
           this.generateSpineBoy();
         }
+      }
+    });
+
+    Emitter().addListener(SpineBoyIdleEvent.NAME, () => {
+      const catetX = this.custle.x + 50 - this.spineBoy.view.x;
+      const catetY = this.custle.y - (this.spineBoy.view.y - 30);
+      const range = Math.round(
+        Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
+      );
+      if (range < 100) {
+        this.custle.tint = "red";
+        this.custle.cursor = "pointer";
+        this.custle.eventMode = "static";
+        this.custle.addEventListener("pointertap", () => {
+          Emitter().emit(
+            SetSceneEvent.NAME,
+            new SetSceneEvent({ sceneName: "PackmanEaterScene" }),
+          );
+        });
       }
     });
   }
