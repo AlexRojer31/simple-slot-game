@@ -54,6 +54,14 @@ export class LoadScene extends Container implements IScene {
     this.loadSecond();
     this.addChild(this.moon, this.planet);
 
+    this.custle = Sprite.from("custle");
+    this.custle.anchor.set(0.5);
+    this.custle.scale.set(0.4);
+    this.custle.position.set(200, 300);
+    this.custle.zIndex = 100;
+    this.custle.visible = false;
+    this.addChild(this.custle);
+
     this.ticker.add((ticker: Ticker) => {
       this.animate(ticker);
     });
@@ -106,6 +114,13 @@ export class LoadScene extends Container implements IScene {
         }, 0);
       }
     });
+    Emitter().addListener(BandleLoadedEvent.NAME, (e: BandleLoadedEvent) => {
+      if (e.data.bandleName == "common") {
+        setTimeout(() => {
+          console.log("common assets loaded");
+        }, 0);
+      }
+    });
 
     Emitter().addListener(BandleLoadedEvent.NAME, (e: BandleLoadedEvent) => {
       if (e.data.bandleName == "spineSkeleton") {
@@ -143,10 +158,10 @@ export class LoadScene extends Container implements IScene {
     if (this.movePlanet) {
       this.planet.x -= ticker.deltaTime;
       this.planet.scale.set((this.planetScale += ticker.deltaTime / 200));
-      if (this.planetScale > 1.5) {
+      if (this.planetScale > 1) {
         this.removeChild(this.loadedMessage);
       }
-      if (this.planetScale > 4) {
+      if (this.planetScale > 1) {
         if (this.spineLoadCounter == 2) {
           this.generateHexField();
           this.movePlanet = false;
@@ -181,12 +196,7 @@ export class LoadScene extends Container implements IScene {
     this.getHex(228, 367, "earth", "foothills");
 
     this.getHex(306, 412, "earth", "grass");
-
-    this.custle = Sprite.from("custle");
-    this.custle.anchor.set(0.5);
-    this.custle.scale.set(0.4);
-    this.custle.position.set(200, 300);
-    this.addChild(this.custle);
+    this.custle.visible = true;
   }
 
   private async getHex(
