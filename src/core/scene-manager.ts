@@ -1,5 +1,6 @@
 import { LoadScene } from "../scenes/load-scene";
 import { PackmanEaterScene } from "../scenes/packman-eater-scene";
+import { SlotScene } from "../scenes/slot-scene";
 import { SetSceneEvent } from "./event-emitter/custom-events/set-scene-event";
 import { Emitter } from "./event-emitter/event-emitter";
 
@@ -40,6 +41,17 @@ class SceneManager {
             this.scenes.get(e.data.sceneName)!.load();
           } else {
             this.scenes.set(e.data.sceneName, new LoadScene());
+            this.scenes.get(e.data.sceneName)!.load();
+          }
+          this.currentScene = this.scenes.get(e.data.sceneName)!;
+          break;
+        }
+        case "SlotScene": {
+          this.currentScene?.unload();
+          if (this.scenes.has(e.data.sceneName)) {
+            this.scenes.get(e.data.sceneName)!.load();
+          } else {
+            this.scenes.set(e.data.sceneName, new SlotScene());
             this.scenes.get(e.data.sceneName)!.load();
           }
           this.currentScene = this.scenes.get(e.data.sceneName)!;

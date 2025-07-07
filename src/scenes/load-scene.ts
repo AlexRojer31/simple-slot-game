@@ -164,7 +164,7 @@ export class LoadScene extends Container implements IScene {
         this.custle.addEventListener("pointertap", () => {
           Emitter().emit(
             SetSceneEvent.NAME,
-            new SetSceneEvent({ sceneName: "PackmanEaterScene" }),
+            new SetSceneEvent({ sceneName: "SlotScene" }),
           );
         });
       }
