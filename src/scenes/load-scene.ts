@@ -111,7 +111,7 @@ export class LoadScene extends Container implements IScene {
       if (e.data.bandleName == "spineSkeleton") {
         this.spineLoadCounter++;
         if (this.spineLoadCounter == 2) {
-          console.log("spine loaded");
+          this.generateSpineBoy();
         }
       }
     });
@@ -120,17 +120,21 @@ export class LoadScene extends Container implements IScene {
       if (e.data.bandleName == "spineAtlas") {
         this.spineLoadCounter++;
         if (this.spineLoadCounter == 2) {
-          this.spineBoy = new SpineBoy();
-          this.spineBoy.view.x = 50;
-          this.spineBoy.view.y = 70;
-          this.spineBoy.spine.scale.set(0.1);
-          this.spineBoy.view.zIndex = 100;
-
-          this.spineBoy.view.visible = false;
-          this.addChild(this.spineBoy.view);
+          this.generateSpineBoy();
         }
       }
     });
+  }
+
+  private async generateSpineBoy(): Promise<void> {
+    this.spineBoy = new SpineBoy();
+    this.spineBoy.view.x = 50;
+    this.spineBoy.view.y = 70;
+    this.spineBoy.spine.scale.set(0.1);
+    this.spineBoy.view.zIndex = 100;
+
+    this.spineBoy.view.visible = false;
+    this.addChild(this.spineBoy.view);
   }
 
   private animate(ticker: Ticker): void {
