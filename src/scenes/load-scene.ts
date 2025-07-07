@@ -122,7 +122,7 @@ export class LoadScene extends Container implements IScene {
       if (e.data.bandleName == "textures") {
         setTimeout(() => {
           this.movePlanet = true;
-        }, 0);
+        }, 3000);
       }
     });
     Emitter().addListener(BandleLoadedEvent.NAME, (e: BandleLoadedEvent) => {
@@ -244,10 +244,10 @@ export class LoadScene extends Container implements IScene {
     if (this.movePlanet) {
       this.planet.x -= ticker.deltaTime;
       this.planet.scale.set((this.planetScale += ticker.deltaTime / 200));
-      if (this.planetScale > 1) {
+      if (this.planetScale > 1.5) {
         this.removeChild(this.loadedMessage);
       }
-      if (this.planetScale > 1) {
+      if (this.planetScale > 4) {
         if (this.spineLoadCounter == 2) {
           this.generateHexField();
           this.movePlanet = false;
