@@ -144,8 +144,11 @@ export class LoadScene extends Container implements IScene {
   private async generateSpineBoy(): Promise<void> {
     this.spineBoy = new SpineBoy();
     this.spineBoy.view.x = 50;
-    this.spineBoy.view.y = 70;
-    this.spineBoy.spine.scale.set(0.1);
+    this.spineBoy.view.y = 75;
+    // this.spineBoy.view.x = 125;
+    // this.spineBoy.view.y = 122;
+    this.spineBoy.view.height = 90;
+    this.spineBoy.view.width = 70;
     this.spineBoy.view.zIndex = 100;
 
     this.spineBoy.view.visible = false;
@@ -223,13 +226,17 @@ export class LoadScene extends Container implements IScene {
     hexContainer.eventMode = "static";
     hexContainer.cursor = "pointer";
     hexContainer.addEventListener("pointerover", () => {
-      console.log(hex.x + " " + this.spineBoy.view.x);
-      console.log(hex.y + " " + this.spineBoy.view.y);
-      hexContainer.alpha = 0.7;
+      const catetX = hex.x + 50 - this.spineBoy.view.x;
+      const catetY = hex.y - (this.spineBoy.view.y - 30);
+      const range = Math.round(
+        Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
+      );
+      console.log(range);
+      if (50 < range && range < 100) {
+        hexContainer.alpha = 0.7;
+      }
     });
     hexContainer.addEventListener("pointerout", () => {
-      console.log(hex.x + " " + this.spineBoy.view.x);
-      console.log(hex.y + " " + this.spineBoy.view.y);
       hexContainer.alpha = 1;
     });
     sprite.mask = hex;
