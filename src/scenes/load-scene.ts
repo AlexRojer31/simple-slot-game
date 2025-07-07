@@ -25,6 +25,9 @@ export class LoadScene extends Container implements IScene {
   private planet!: Sprite;
   private moon!: Sprite;
   private custle!: Sprite;
+  private animateCustle: boolean = false;
+  private animateCustleSteps: number = 0.4;
+  private animateCustleDirection: number = 1;
   private ticker: Ticker = new Ticker();
   private movePlanet: boolean = false;
   private spineBoyState: number = SPINE_STATE.idle;
@@ -124,7 +127,7 @@ export class LoadScene extends Container implements IScene {
     Emitter().addListener(BandleLoadedEvent.NAME, (e: BandleLoadedEvent) => {
       if (e.data.bandleName == "common") {
         setTimeout(() => {
-          console.log("common assets loaded");
+          this.animateCustle = true;
         }, 0);
       }
     });
@@ -196,6 +199,25 @@ export class LoadScene extends Container implements IScene {
           }),
         );
         this.spineBoyState = SPINE_STATE.idle;
+      }
+    }
+
+    if (this.animateCustle) {
+      if (this.animateCustleDirection > 0) {
+        this.custle.scale.set(
+          (this.animateCustleSteps += ticker.deltaTime / 1000),
+        );
+      }
+      if (this.animateCustleDirection < 1) {
+        this.custle.scale.set(
+          (this.animateCustleSteps -= ticker.deltaTime / 1000),
+        );
+      }
+      if (this.animateCustleSteps > 0.43) {
+        this.animateCustleDirection = 0;
+      }
+      if (this.animateCustleSteps < 0.37) {
+        this.animateCustleDirection = 1;
       }
     }
 
@@ -282,7 +304,7 @@ export class LoadScene extends Container implements IScene {
         this.spineBoyState = SPINE_STATE.move;
       }
     });
-    hexContainer.addEventListener("pointerover", () => {
+    hexContainer.addEventListener("pointermove", () => {
       const catetX = hex.x + 50 - this.spineBoy.view.x;
       const catetY = hex.y - (this.spineBoy.view.y - 30);
       const range = Math.round(
