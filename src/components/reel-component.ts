@@ -7,6 +7,8 @@ import { StopReelsEvent } from "../core/event-emitter/custom-events/stop-reels-e
 enum ANIMATIONS_STATE {
   idle = 0,
   rotate,
+  slow,
+  toLine,
 }
 export class ReelComponent extends Container {
   private currentState: number = ANIMATIONS_STATE.idle;
@@ -17,6 +19,7 @@ export class ReelComponent extends Container {
   private defaultSpeed: number = Math.round(
     10 * Math.random() * 3 + Math.random() * this.modifySpeed,
   );
+  private slowlySpeed: number = this.defaultSpeed;
 
   private symbolHeight!: number;
   private symbolWidth!: number;
@@ -63,7 +66,40 @@ export class ReelComponent extends Container {
       case ANIMATIONS_STATE.rotate:
         this.rotate();
         break;
+      case ANIMATIONS_STATE.slow:
+        this.slow();
+        break;
     }
+  }
+
+  public slow(): void {
+    this.symbols.forEach((s: SymbolComponent, i: number) => {
+      const nextS: number = i == this.symbols.length - 1 ? 0 : i + 1;
+      if (this.symbols[nextS].position.y > -this.padding / 2) {
+        s.canMove = true;
+      }
+      if (s.canMove) {
+        s.position.y += this.slowlySpeed;
+        if (this.slowlySpeed > 1) {
+          this.slowlySpeed -= 0.01;
+        } else {
+          this.slowlySpeed = 1;
+        }
+        if (i == 0 && s.position.y == 300) {
+          this.slowlySpeed = this.defaultSpeed;
+          this.currentState = ANIMATIONS_STATE.idle;
+          return;
+        }
+      }
+      if (
+        s.position.y >
+        this.symbolHeight * this.symbolsInReel -
+          this.symbolsInReel * this.padding
+      ) {
+        s.position.y = -this.symbolHeight + this.padding;
+        s.canMove = false;
+      }
+    });
   }
 
   public rotate(): void {
@@ -92,7 +128,7 @@ export class ReelComponent extends Container {
     });
 
     Emitter().addListener(StopReelsEvent.NAME, () => {
-      this.currentState = ANIMATIONS_STATE.idle;
+      this.currentState = ANIMATIONS_STATE.slow;
     });
   }
 }
