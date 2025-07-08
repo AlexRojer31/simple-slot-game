@@ -24,7 +24,7 @@ export class SlotScene extends Container implements IScene {
     );
 
     const runBtn: SymbolComponent = new SymbolComponent("RUN", 90);
-    runBtn.position.set(130, 100);
+    runBtn.position.set(100, 100);
     runBtn.eventMode = "static";
     runBtn.cursor = "pointer";
     runBtn.on("pointertap", runReel);
@@ -39,7 +39,14 @@ export class SlotScene extends Container implements IScene {
       }, Math.random() * 6000);
     }
 
-    this.addChild(runBtn, this.reelsComponent);
+    const moneyTxt: string = "Денех есть:";
+    const betTxt: string = "Куррент Bet:";
+    const moneyNow: SymbolComponent = new SymbolComponent(moneyTxt, 50);
+    moneyNow.position.set(130, 200);
+
+    const currentBet: SymbolComponent = new SymbolComponent(betTxt, 50);
+    currentBet.position.set(140, 250);
+    this.addChild(runBtn, moneyNow, currentBet, this.reelsComponent);
   }
 
   load(): void {
