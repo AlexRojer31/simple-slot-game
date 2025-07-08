@@ -74,6 +74,13 @@ export class ReelComponent extends Container {
 
   public slow(): void {
     this.symbols.forEach((s: SymbolComponent, i: number) => {
+      if (i == 0 && s.position.y == 200) {
+        this.currentState = ANIMATIONS_STATE.idle;
+        this.slowlySpeed = this.defaultSpeed;
+        return;
+      }
+    });
+    this.symbols.forEach((s: SymbolComponent, i: number) => {
       const nextS: number = i == this.symbols.length - 1 ? 0 : i + 1;
       if (this.symbols[nextS].position.y > -this.padding / 2) {
         s.canMove = true;
@@ -84,11 +91,6 @@ export class ReelComponent extends Container {
           this.slowlySpeed -= 0.01;
         } else {
           this.slowlySpeed = 1;
-        }
-        if (i == 0 && s.position.y == 300) {
-          this.slowlySpeed = this.defaultSpeed;
-          this.currentState = ANIMATIONS_STATE.idle;
-          return;
         }
       }
       if (
