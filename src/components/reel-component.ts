@@ -9,7 +9,7 @@ export class ReelComponent extends Container {
   private currentState: number = ANIMATIONS_STATE.idle;
   private modifySpeed: number = 1;
   private symbolsInReel: number = 3;
-  private padding: number = 30;
+  private padding: number = 15;
   private symbols: SymbolComponent[] = [];
   private defaultSpeed: number = Math.round(
     10 * Math.random() * 3 + Math.random() * this.modifySpeed,
@@ -28,7 +28,7 @@ export class ReelComponent extends Container {
   private generateSymbols(count: number, str: string): void {
     const symbolsContainer: Container = new Container();
     for (let i: number = 0; i < count; i++) {
-      const symbol: SymbolComponent = new SymbolComponent(str[i], 220);
+      const symbol: SymbolComponent = new SymbolComponent(str[i], 130);
       this.symbols.push(symbol);
       this.symbolWidth = symbol.width;
       this.symbolHeight = symbol.height;
