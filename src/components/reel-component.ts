@@ -3,6 +3,7 @@ import { SymbolComponent } from "./symbol-component";
 import { RunReelsEvent } from "../core/event-emitter/custom-events/run-reels-event";
 import { Emitter } from "../core/event-emitter/event-emitter";
 import { StopReelsEvent } from "../core/event-emitter/custom-events/stop-reels-event";
+import { app } from "../app";
 
 enum ANIMATIONS_STATE {
   idle = 0,
@@ -83,11 +84,7 @@ export class ReelComponent extends Container {
     this.symbols.forEach((s: SymbolComponent, i: number) => {
       if (
         i == this.requiredSymbol &&
-        s.position.y ==
-          (this.symbolWidth + this.padding,
-          this.symbolHeight * this.symbolsInReel -
-            this.symbolsInReel * this.padding) /
-            2
+        s.position.y == app().screen.height / 2 - this.symbolHeight
       ) {
         this.currentState = ANIMATIONS_STATE.idle;
         this.slowlySpeed = this.defaultSpeed;

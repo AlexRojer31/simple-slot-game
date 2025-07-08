@@ -27,10 +27,10 @@ export class SlotScene extends Container implements IScene {
 
     this.reelsComponent.position.set(
       app().screen.width / 2 - this.reelsComponent.width / 2,
-      100,
+      10,
     );
 
-    const runBtn: SymbolComponent = new SymbolComponent("RUN", 90);
+    const runBtn: SymbolComponent = new SymbolComponent("RUN", 54);
     runBtn.position.set(100, 100);
     runBtn.eventMode = "static";
     runBtn.cursor = "pointer";
@@ -56,18 +56,18 @@ export class SlotScene extends Container implements IScene {
 
     this.moneyNow = new SymbolComponent(
       this.gameModel.moneyTxt + this.gameModel.balance,
-      36,
+      24,
     );
     this.moneyNow.position.set(150, 200);
 
     this.currentBet = new SymbolComponent(
       this.gameModel.betTxt +
         this.gameModel.bets[this.gameModel.currentBetIndex],
-      36,
+      24,
     );
     this.currentBet.position.set(120, 250);
 
-    const up: SymbolComponent = new SymbolComponent("UP", 90);
+    const up: SymbolComponent = new SymbolComponent("UP", 45);
     up.position.set(60, 330);
     up.eventMode = "static";
     up.cursor = "pointer";
@@ -75,7 +75,7 @@ export class SlotScene extends Container implements IScene {
       Emitter().emit(ChangeBetEvent.NAME, new ChangeBetEvent({ isUp: true }));
     });
 
-    const down: SymbolComponent = new SymbolComponent("DOWN", 50);
+    const down: SymbolComponent = new SymbolComponent("DOWN", 26);
     down.position.set(80, 400);
     down.eventMode = "static";
     down.cursor = "pointer";
