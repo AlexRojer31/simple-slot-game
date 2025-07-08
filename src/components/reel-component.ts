@@ -1,7 +1,12 @@
 import { Container, Graphics } from "pixi.js";
 import { SymbolComponent } from "./symbol-component";
 
+enum ANIMATIONS_STATE {
+  idle = 0,
+  rotate,
+}
 export class ReelComponent extends Container {
+  private currentState: number = ANIMATIONS_STATE.idle;
   private modifySpeed: number = 1;
   private symbolsInReel: number = 3;
   private padding: number = 30;
@@ -48,6 +53,16 @@ export class ReelComponent extends Container {
   }
 
   public animate(): void {
+    switch (this.currentState) {
+      case ANIMATIONS_STATE.idle:
+        break;
+      case ANIMATIONS_STATE.rotate:
+        this.rotate();
+        break;
+    }
+  }
+
+  public rotate(): void {
     this.symbols.forEach((s: SymbolComponent, i: number) => {
       const nextS: number = i == this.symbols.length - 1 ? 0 : i + 1;
       if (this.symbols[nextS].position.y > -this.padding / 2) {
