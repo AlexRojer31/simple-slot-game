@@ -34,13 +34,19 @@ export class SlotScene extends Container implements IScene {
     runBtn.position.set(100, 100);
     runBtn.eventMode = "static";
     runBtn.cursor = "pointer";
-    runBtn.on("pointertap", () => {
+    runBtn.on("pointertap", runReels);
+
+    function runReels() {
       Emitter().emit(RunReelsEvent.NAME);
+      runBtn.off("pointertap", runReels);
+      runBtn.cursor = "auto";
 
       setTimeout(() => {
         Emitter().emit(StopReelsEvent.NAME);
+        runBtn.on("pointertap", runReels);
+        runBtn.cursor = "pointer";
       }, Math.random() * 6000);
-    });
+    }
 
     this.moneyNow = new SymbolComponent(
       this.gameModel.moneyTxt + this.gameModel.balance,
