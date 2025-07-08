@@ -10,18 +10,10 @@ import { GameModel } from "../data-models/game-model";
 import { ChangeBetEvent } from "../core/event-emitter/custom-events/change-bet-event";
 import { BetChangedEvent } from "../core/event-emitter/custom-events/bet-changed-event";
 
-enum SCENE_STATE {
-  idle = 0,
-  changingBet,
-  running,
-  win,
-  loss,
-}
 export class SlotScene extends Container implements IScene {
   private ticker: Ticker = new Ticker();
   private gameModel: GameModel = new GameModel();
   private reelsComponent: ReelsComponent = new ReelsComponent();
-  private currentState: number = SCENE_STATE.idle;
 
   private moneyNow!: SymbolComponent;
   private currentBet!: SymbolComponent;
@@ -43,14 +35,11 @@ export class SlotScene extends Container implements IScene {
     runBtn.eventMode = "static";
     runBtn.cursor = "pointer";
     runBtn.on("pointertap", () => {
-      if (this.currentState == SCENE_STATE.idle) {
-        Emitter().emit(RunReelsEvent.NAME);
-        this.currentState = SCENE_STATE.running;
+      Emitter().emit(RunReelsEvent.NAME);
 
-        setTimeout(() => {
-          Emitter().emit(StopReelsEvent.NAME);
-        }, Math.random() * 6000);
-      }
+      setTimeout(() => {
+        Emitter().emit(StopReelsEvent.NAME);
+      }, Math.random() * 6000);
     });
 
     this.moneyNow = new SymbolComponent(
@@ -72,7 +61,6 @@ export class SlotScene extends Container implements IScene {
     up.cursor = "pointer";
     up.on("pointertap", () => {
       Emitter().emit(ChangeBetEvent.NAME, new ChangeBetEvent({ isUp: true }));
-      this.currentState = SCENE_STATE.changingBet;
     });
 
     const down: SymbolComponent = new SymbolComponent("DOWN", 50);
@@ -81,7 +69,6 @@ export class SlotScene extends Container implements IScene {
     down.cursor = "pointer";
     down.on("pointertap", () => {
       Emitter().emit(ChangeBetEvent.NAME, new ChangeBetEvent({ isUp: false }));
-      this.currentState = SCENE_STATE.changingBet;
     });
 
     this.addChild(
@@ -113,7 +100,6 @@ export class SlotScene extends Container implements IScene {
         this.gameModel.betTxt +
           this.gameModel.bets[this.gameModel.currentBetIndex],
       );
-      this.currentState = SCENE_STATE.idle;
     });
   }
 
