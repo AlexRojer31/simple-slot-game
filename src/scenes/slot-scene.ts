@@ -6,9 +6,12 @@ import { SymbolComponent } from "../components/symbol-component";
 import { Emitter } from "../core/event-emitter/event-emitter";
 import { RunReelsEvent } from "../core/event-emitter/custom-events/run-reels-event";
 import { StopReelsEvent } from "../core/event-emitter/custom-events/stop-reels-event";
+import { GameModel } from "../data-models/game-model";
+import { ChangeBetEvent } from "../core/event-emitter/custom-events/change-bet-event";
 
 export class SlotScene extends Container implements IScene {
   private ticker: Ticker = new Ticker();
+  private gameModel: GameModel = new GameModel();
   private reelsComponent: ReelsComponent = new ReelsComponent();
 
   constructor() {
@@ -39,14 +42,37 @@ export class SlotScene extends Container implements IScene {
       }, Math.random() * 6000);
     }
 
-    const moneyTxt: string = "Денех есть:";
-    const betTxt: string = "Куррент Bet:";
-    const moneyNow: SymbolComponent = new SymbolComponent(moneyTxt, 50);
-    moneyNow.position.set(130, 200);
+    const moneyTxt: string = "Money всего: ";
+    const betTxt: string = "Куррент Bet: ";
+    const moneyNow: SymbolComponent = new SymbolComponent(
+      moneyTxt + this.gameModel.balance,
+      36,
+    );
+    moneyNow.position.set(150, 200);
 
-    const currentBet: SymbolComponent = new SymbolComponent(betTxt, 50);
-    currentBet.position.set(140, 250);
-    this.addChild(runBtn, moneyNow, currentBet, this.reelsComponent);
+    const currentBet: SymbolComponent = new SymbolComponent(
+      betTxt + this.gameModel.bets[this.gameModel.currentBetIndex],
+      36,
+    );
+    currentBet.position.set(120, 250);
+
+    const up: SymbolComponent = new SymbolComponent("UP", 90);
+    up.position.set(60, 330);
+    up.eventMode = "static";
+    up.cursor = "pointer";
+    up.on("pointertap", () => {
+      Emitter().emit(ChangeBetEvent.NAME, new ChangeBetEvent({ isUp: true }));
+    });
+
+    const down: SymbolComponent = new SymbolComponent("DOWN", 50);
+    down.position.set(80, 400);
+    down.eventMode = "static";
+    down.cursor = "pointer";
+    down.on("pointertap", () => {
+      Emitter().emit(ChangeBetEvent.NAME, new ChangeBetEvent({ isUp: false }));
+    });
+
+    this.addChild(runBtn, moneyNow, currentBet, up, down, this.reelsComponent);
   }
 
   load(): void {
