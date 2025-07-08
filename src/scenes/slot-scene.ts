@@ -27,19 +27,19 @@ export class SlotScene extends Container implements IScene {
     runBtn.position.set(130, 100);
     runBtn.eventMode = "static";
     runBtn.cursor = "pointer";
-    runBtn.on("pointertap", () => {
+    runBtn.on("pointertap", runReel);
+
+    function runReel() {
       Emitter().emit(RunReelsEvent.NAME);
-    });
+      runBtn.off("pointertap", runReel);
 
-    const stopBtn: SymbolComponent = new SymbolComponent("СТОП", 90);
-    stopBtn.position.set(170, 200);
-    stopBtn.eventMode = "static";
-    stopBtn.cursor = "pointer";
-    stopBtn.on("pointertap", () => {
-      Emitter().emit(StopReelsEvent.NAME);
-    });
+      setTimeout(() => {
+        Emitter().emit(StopReelsEvent.NAME);
+        runBtn.on("pointertap", runReel);
+      }, Math.random() * 6000);
+    }
 
-    this.addChild(runBtn, stopBtn, this.reelsComponent);
+    this.addChild(runBtn, this.reelsComponent);
   }
 
   load(): void {
