@@ -50,7 +50,12 @@ class ResultFetchManager {
   ];
 
   public async getResult(): Promise<StopReelsEvent> {
-    return new StopReelsEvent(this.results[Math.floor(Math.random() * 10) + 1]);
+    let index: number = -1;
+    do {
+      index = Math.floor(Math.random() * 10);
+    } while (index < 0 || index > 9);
+
+    return new StopReelsEvent(this.results[index]);
   }
 }
 

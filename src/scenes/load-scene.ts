@@ -130,15 +130,15 @@ export class LoadScene extends Container implements IScene {
         setTimeout(() => {
           this.animateCustle = true;
 
-          this.custle.tint = "red";
-          this.custle.cursor = "pointer";
-          this.custle.eventMode = "static";
-          this.custle.addEventListener("pointertap", () => {
-            Emitter().emit(
-              SetSceneEvent.NAME,
-              new SetSceneEvent({ sceneName: "SlotScene" }),
-            );
-          });
+          // this.custle.tint = "red";
+          // this.custle.cursor = "pointer";
+          // this.custle.eventMode = "static";
+          // this.custle.addEventListener("pointertap", () => {
+          //   Emitter().emit(
+          //     SetSceneEvent.NAME,
+          //     new SetSceneEvent({ sceneName: "SlotScene" }),
+          //   );
+          // });
         }, 0);
       }
     });
@@ -162,22 +162,22 @@ export class LoadScene extends Container implements IScene {
     });
 
     Emitter().addListener(SpineBoyIdleEvent.NAME, () => {
-      // const catetX = this.custle.x + 50 - this.spineBoy.view.x;
-      // const catetY = this.custle.y - (this.spineBoy.view.y - 30);
-      // const range = Math.round(
-      //   Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
-      // );
-      // if (range < 100) {
-      //   this.custle.tint = "red";
-      //   this.custle.cursor = "pointer";
-      //   this.custle.eventMode = "static";
-      //   this.custle.addEventListener("pointertap", () => {
-      //     Emitter().emit(
-      //       SetSceneEvent.NAME,
-      //       new SetSceneEvent({ sceneName: "SlotScene" }),
-      //     );
-      //   });
-      // }
+      const catetX = this.custle.x + 50 - this.spineBoy.view.x;
+      const catetY = this.custle.y - (this.spineBoy.view.y - 30);
+      const range = Math.round(
+        Math.sqrt(Math.pow(catetX, 2) + Math.pow(catetY, 2)),
+      );
+      if (range < 100) {
+        this.custle.tint = "red";
+        this.custle.cursor = "pointer";
+        this.custle.eventMode = "static";
+        this.custle.addEventListener("pointertap", () => {
+          Emitter().emit(
+            SetSceneEvent.NAME,
+            new SetSceneEvent({ sceneName: "SlotScene" }),
+          );
+        });
+      }
     });
   }
 
@@ -254,24 +254,24 @@ export class LoadScene extends Container implements IScene {
     if (this.movePlanet) {
       this.planet.x -= ticker.deltaTime;
       this.planet.scale.set((this.planetScale += ticker.deltaTime / 200));
-      // if (this.planetScale > 1.5) {
-      //   this.removeChild(this.loadedMessage);
-      // }
-      // if (this.planetScale > 4) {
-      //   if (this.spineLoadCounter == 2) {
-      //     this.generateHexField();
-      //     this.movePlanet = false;
-      //     this.spineBoy.view.visible = true;
-      //     this.spineBoy.spawn();
-      //   }
-      // }
-      if (this.spineLoadCounter == 2) {
+      if (this.planetScale > 1.5) {
         this.removeChild(this.loadedMessage);
-        this.generateHexField();
-        this.movePlanet = false;
-        this.spineBoy.view.visible = true;
-        this.spineBoy.spawn();
       }
+      if (this.planetScale > 4) {
+        if (this.spineLoadCounter == 2) {
+          this.generateHexField();
+          this.movePlanet = false;
+          this.spineBoy.view.visible = true;
+          this.spineBoy.spawn();
+        }
+      }
+      // if (this.spineLoadCounter == 2) {
+      //   this.removeChild(this.loadedMessage);
+      //   this.generateHexField();
+      //   this.movePlanet = false;
+      //   this.spineBoy.view.visible = true;
+      //   this.spineBoy.spawn();
+      // }
     }
   }
 
