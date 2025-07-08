@@ -1,7 +1,7 @@
 import { Container, Ticker } from "pixi.js";
 import { app } from "../app";
 import { IScene } from "../core/scene-manager";
-import { ReelsComponent } from "../components/reels-component copy";
+import { ReelsComponent } from "../components/reels-component";
 import { SymbolComponent } from "../components/symbol-component";
 import { Emitter } from "../core/event-emitter/event-emitter";
 import { RunReelsEvent } from "../core/event-emitter/custom-events/run-reels-event";
