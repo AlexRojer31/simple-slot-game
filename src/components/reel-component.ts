@@ -12,6 +12,7 @@ enum ANIMATIONS_STATE {
   toLine,
 }
 export class ReelComponent extends Container {
+  private reelStatus: number = 0;
   private reelNumber: number = 0;
   private requiredSymbol: number = 0;
   private currentState: number = ANIMATIONS_STATE.idle;
@@ -57,7 +58,8 @@ export class ReelComponent extends Container {
         0,
         0,
         this.symbolWidth + this.padding,
-        this.symbolHeight * this.symbolsInReel -
+        (this.symbolHeight * this.symbolsInReel) / 2 +
+          this.symbolHeight -
           this.symbolsInReel * this.padding,
       )
       .fill(0x000000);
@@ -77,7 +79,19 @@ export class ReelComponent extends Container {
       case ANIMATIONS_STATE.slow:
         this.slow();
         break;
+      case ANIMATIONS_STATE.toLine:
+        this.toLine();
+        break;
     }
+  }
+
+  public toLine(): void {
+    this.symbols.forEach((s: SymbolComponent, i: number) => {
+      if (i == this.requiredSymbol) {
+        s.tint = this.reelStatus ? "green" : "red";
+        this.currentState = ANIMATIONS_STATE.idle;
+      }
+    });
   }
 
   public slow(): void {
@@ -86,7 +100,7 @@ export class ReelComponent extends Container {
         i == this.requiredSymbol &&
         s.position.y == app().screen.height / 2 - this.symbolHeight
       ) {
-        this.currentState = ANIMATIONS_STATE.idle;
+        this.currentState = ANIMATIONS_STATE.toLine;
         this.slowlySpeed = this.defaultSpeed;
         return;
       }
@@ -116,6 +130,9 @@ export class ReelComponent extends Container {
   }
 
   public rotate(): void {
+    this.symbols.forEach((s: SymbolComponent) => {
+      s.tint = "white";
+    });
     this.symbols.forEach((s: SymbolComponent, i: number) => {
       const nextS: number = i == this.symbols.length - 1 ? 0 : i + 1;
       if (this.symbols[nextS].position.y > -this.padding / 2) {
@@ -142,6 +159,7 @@ export class ReelComponent extends Container {
 
     Emitter().addListener(StopReelsEvent.NAME, (e: StopReelsEvent) => {
       this.requiredSymbol = e.data.requiredSymbols[this.reelNumber];
+      this.reelStatus = e.data.isWin ? 1 : 0;
       this.currentState = ANIMATIONS_STATE.slow;
     });
   }
