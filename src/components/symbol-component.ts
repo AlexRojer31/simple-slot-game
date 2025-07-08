@@ -18,4 +18,8 @@ export class SymbolComponent extends Container {
     this.symbol.anchor.set(0.5);
     this.addChild(this.symbol);
   }
+
+  public setText(txt: string): void {
+    this.symbol.text = txt;
+  }
 }
