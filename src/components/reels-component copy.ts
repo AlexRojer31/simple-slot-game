@@ -27,4 +27,8 @@ export class ReelsComponent extends Container {
 
     this.addChild(...this.reelss);
   }
+
+  public animate(): void {
+    this.reelss.forEach((r: ReelComponent) => r.animate());
+  }
 }

@@ -4,6 +4,7 @@ import { SymbolComponent } from "./symbol-component";
 export class ReelComponent extends Container {
   private padding: number = 50;
   private symbols: SymbolComponent[] = [];
+  private defaultSpeed: number = Math.round(10 * Math.random() * 3);
 
   private containerMask!: Graphics;
   private symbolsContainer!: Container;
@@ -24,7 +25,7 @@ export class ReelComponent extends Container {
     this.symbol2 = new SymbolComponent("Б");
     this.symbol3 = new SymbolComponent("В");
     this.symbol4 = new SymbolComponent("Г");
-    this.symbol5 = new SymbolComponent("Д");
+    this.symbol5 = new SymbolComponent("X");
     this.symbol6 = new SymbolComponent("Е");
     this.symbols.push(this.symbol1);
     this.symbols.push(this.symbol2);
@@ -56,5 +57,21 @@ export class ReelComponent extends Container {
 
     this.symbolsContainer.addChild(...this.symbols);
     this.addChild(this.containerMask, this.symbolsContainer);
+  }
+
+  public animate(): void {
+    this.symbols.forEach((s: SymbolComponent, i: number) => {
+      const nextS: number = i == this.symbols.length - 1 ? 0 : i + 1;
+      if (this.symbols[nextS].position.y > -this.padding / 2) {
+        s.canMove = true;
+      }
+      if (s.canMove) {
+        s.position.y += this.defaultSpeed;
+      }
+      if (s.position.y > this.symbolHeight * 3 - 3 * this.padding) {
+        s.position.y = -this.symbolHeight + this.padding;
+        s.canMove = false;
+      }
+    });
   }
 }

@@ -2,6 +2,7 @@ import { Container, Text } from "pixi.js";
 
 export class SymbolComponent extends Container {
   private symbol!: Text;
+  public canMove: boolean = true;
 
   constructor(later: string) {
     super();

@@ -5,6 +5,7 @@ import { ReelsComponent } from "../components/reels-component copy";
 
 export class SlotScene extends Container implements IScene {
   private ticker: Ticker = new Ticker();
+  private reelsComponent: ReelsComponent = new ReelsComponent();
 
   constructor() {
     super();
@@ -13,7 +14,7 @@ export class SlotScene extends Container implements IScene {
       this.animate();
     });
 
-    this.addChild(new ReelsComponent());
+    this.addChild(this.reelsComponent);
   }
 
   load(): void {
@@ -30,5 +31,7 @@ export class SlotScene extends Container implements IScene {
 
   private subscribes(): void {}
 
-  private animate(): void {}
+  private animate(): void {
+    this.reelsComponent.animate();
+  }
 }
