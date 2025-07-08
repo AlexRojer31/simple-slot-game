@@ -1,4 +1,4 @@
 export class StopReelsEvent {
-  public static NAME: string = "runReelsEvent";
+  public static NAME: string = "stopReelsEvent";
   constructor() {}
 }

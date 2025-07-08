@@ -1,5 +1,8 @@
 import { Container, Graphics } from "pixi.js";
 import { SymbolComponent } from "./symbol-component";
+import { RunReelsEvent } from "../core/event-emitter/custom-events/run-reels-event";
+import { Emitter } from "../core/event-emitter/event-emitter";
+import { StopReelsEvent } from "../core/event-emitter/custom-events/stop-reels-event";
 
 enum ANIMATIONS_STATE {
   idle = 0,
@@ -23,6 +26,7 @@ export class ReelComponent extends Container {
     this.modifySpeed = modifySpeed;
     this.symbolsInReel = symbolsInReel;
     this.generateSymbols(6, "ПРИВЕТЫ");
+    this.subscribes();
   }
 
   private generateSymbols(count: number, str: string): void {
@@ -79,6 +83,16 @@ export class ReelComponent extends Container {
         s.position.y = -this.symbolHeight + this.padding;
         s.canMove = false;
       }
+    });
+  }
+
+  private subscribes(): void {
+    Emitter().addListener(RunReelsEvent.NAME, () => {
+      this.currentState = ANIMATIONS_STATE.rotate;
+    });
+
+    Emitter().addListener(StopReelsEvent.NAME, () => {
+      this.currentState = ANIMATIONS_STATE.idle;
     });
   }
 }

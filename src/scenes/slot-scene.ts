@@ -2,6 +2,10 @@ import { Container, Ticker } from "pixi.js";
 import { app } from "../app";
 import { IScene } from "../core/scene-manager";
 import { ReelsComponent } from "../components/reels-component copy";
+import { SymbolComponent } from "../components/symbol-component";
+import { Emitter } from "../core/event-emitter/event-emitter";
+import { RunReelsEvent } from "../core/event-emitter/custom-events/run-reels-event";
+import { StopReelsEvent } from "../core/event-emitter/custom-events/stop-reels-event";
 
 export class SlotScene extends Container implements IScene {
   private ticker: Ticker = new Ticker();
@@ -18,7 +22,24 @@ export class SlotScene extends Container implements IScene {
       app().screen.width / 2 - this.reelsComponent.width / 2,
       100,
     );
-    this.addChild(this.reelsComponent);
+
+    const runBtn: SymbolComponent = new SymbolComponent("RUN", 90);
+    runBtn.position.set(130, 100);
+    runBtn.eventMode = "static";
+    runBtn.cursor = "pointer";
+    runBtn.on("pointertap", () => {
+      Emitter().emit(RunReelsEvent.NAME);
+    });
+
+    const stopBtn: SymbolComponent = new SymbolComponent("СТОП", 90);
+    stopBtn.position.set(170, 200);
+    stopBtn.eventMode = "static";
+    stopBtn.cursor = "pointer";
+    stopBtn.on("pointertap", () => {
+      Emitter().emit(StopReelsEvent.NAME);
+    });
+
+    this.addChild(runBtn, stopBtn, this.reelsComponent);
   }
 
   load(): void {
