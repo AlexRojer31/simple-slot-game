@@ -2,22 +2,28 @@ import { Container, Graphics } from "pixi.js";
 import { SymbolComponent } from "./symbol-component";
 
 export class ReelComponent extends Container {
-  private padding: number = 50;
+  private modifySpeed: number = 1;
+  private symbolsInReel: number = 3;
+  private padding: number = 30;
   private symbols: SymbolComponent[] = [];
-  private defaultSpeed: number = Math.round(10 * Math.random() * 3 + 1);
+  private defaultSpeed: number = Math.round(
+    10 * Math.random() * 3 + Math.random() * this.modifySpeed,
+  );
 
   private symbolHeight!: number;
   private symbolWidth!: number;
 
-  constructor() {
+  constructor(modifySpeed: number = 1, symbolsInReel: number = 3) {
     super();
+    this.modifySpeed = modifySpeed;
+    this.symbolsInReel = symbolsInReel;
     this.generateSymbols(6, "ПРИВЕТЫ");
   }
 
   private generateSymbols(count: number, str: string): void {
     const symbolsContainer: Container = new Container();
     for (let i: number = 0; i < count; i++) {
-      const symbol: SymbolComponent = new SymbolComponent(str[i]);
+      const symbol: SymbolComponent = new SymbolComponent(str[i], 220);
       this.symbols.push(symbol);
       this.symbolWidth = symbol.width;
       this.symbolHeight = symbol.height;
@@ -31,7 +37,8 @@ export class ReelComponent extends Container {
         0,
         0,
         this.symbolWidth + this.padding,
-        this.symbolHeight * 3 - 3 * this.padding,
+        this.symbolHeight * this.symbolsInReel -
+          this.symbolsInReel * this.padding,
       )
       .fill(0x000000);
     symbolsContainer.mask = containerMask;
@@ -49,7 +56,11 @@ export class ReelComponent extends Container {
       if (s.canMove) {
         s.position.y += this.defaultSpeed;
       }
-      if (s.position.y > this.symbolHeight * 3 - 3 * this.padding) {
+      if (
+        s.position.y >
+        this.symbolHeight * this.symbolsInReel -
+          this.symbolsInReel * this.padding
+      ) {
         s.position.y = -this.symbolHeight + this.padding;
         s.canMove = false;
       }

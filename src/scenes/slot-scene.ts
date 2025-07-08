@@ -14,6 +14,10 @@ export class SlotScene extends Container implements IScene {
       this.animate();
     });
 
+    this.reelsComponent.position.set(
+      app().screen.width / 2 - this.reelsComponent.width / 2,
+      100,
+    );
     this.addChild(this.reelsComponent);
   }
 

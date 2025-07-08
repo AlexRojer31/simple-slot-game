@@ -4,14 +4,14 @@ export class SymbolComponent extends Container {
   private symbol!: Text;
   public canMove: boolean = true;
 
-  constructor(later: string) {
+  constructor(later: string, size: number = 150) {
     super();
 
     this.symbol = new Text({
       text: later,
       style: {
         fill: "#ffffff",
-        fontSize: 320,
+        fontSize: size,
         fontFamily: "Georgia",
       },
     });
