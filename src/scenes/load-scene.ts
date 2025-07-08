@@ -265,16 +265,12 @@ export class LoadScene extends Container implements IScene {
       //     this.spineBoy.spawn();
       //   }
       // }
-      if (this.planetScale > 1) {
+      if (this.spineLoadCounter == 2) {
         this.removeChild(this.loadedMessage);
-      }
-      if (this.planetScale > 1) {
-        if (this.spineLoadCounter == 2) {
-          this.generateHexField();
-          this.movePlanet = false;
-          this.spineBoy.view.visible = true;
-          this.spineBoy.spawn();
-        }
+        this.generateHexField();
+        this.movePlanet = false;
+        this.spineBoy.view.visible = true;
+        this.spineBoy.spawn();
       }
     }
   }

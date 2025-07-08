@@ -1,6 +1,7 @@
 import { Container, Ticker } from "pixi.js";
 import { app } from "../app";
 import { IScene } from "../core/scene-manager";
+import { ReelComponent } from "../components/reel-component";
 
 export class SlotScene extends Container implements IScene {
   private ticker: Ticker = new Ticker();
@@ -11,6 +12,8 @@ export class SlotScene extends Container implements IScene {
     this.ticker.add(() => {
       this.animate();
     });
+
+    this.addChild(new ReelComponent());
   }
 
   load(): void {
