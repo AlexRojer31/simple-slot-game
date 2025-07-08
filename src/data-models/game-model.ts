@@ -41,8 +41,8 @@ export class GameModel {
       Emitter().emit(BetChangedEvent.NAME);
     });
 
-    Emitter().addListener(StopReelsEvent.NAME, () => {
-      if (Math.round(Math.random() * 10) > 7) {
+    Emitter().addListener(StopReelsEvent.NAME, (e: StopReelsEvent) => {
+      if (e.data.isWin) {
         this.balance += this.bets[this.currentBetIndex] * 5;
       }
 

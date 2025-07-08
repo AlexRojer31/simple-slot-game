@@ -16,7 +16,7 @@ export class ReelsComponent extends Container {
 
   private generateReels(count: number): void {
     for (let i: number = 0; i < count; i++) {
-      const reel = new ReelComponent(i, 4);
+      const reel = new ReelComponent(i, i, 4);
       this.reels.push(reel);
       this.reelWidth = reel.width;
       reel.position.x = (this.reelWidth + this.padding) * i;

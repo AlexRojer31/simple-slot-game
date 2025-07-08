@@ -42,7 +42,13 @@ export class SlotScene extends Container implements IScene {
       runBtn.cursor = "auto";
 
       setTimeout(() => {
-        Emitter().emit(StopReelsEvent.NAME);
+        Emitter().emit(
+          StopReelsEvent.NAME,
+          new StopReelsEvent({
+            requiredSymbols: [0, 1, 2, 3, 4, 5],
+            isWin: true,
+          }),
+        );
         runBtn.on("pointertap", runReels);
         runBtn.cursor = "pointer";
       }, Math.random() * 6000);

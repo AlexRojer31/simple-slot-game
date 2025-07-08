@@ -11,6 +11,8 @@ enum ANIMATIONS_STATE {
   toLine,
 }
 export class ReelComponent extends Container {
+  private reelNumber: number = 0;
+  private requiredSymbol: number = 0;
   private currentState: number = ANIMATIONS_STATE.idle;
   private modifySpeed: number = 1;
   private symbolsInReel: number = 3;
@@ -24,8 +26,13 @@ export class ReelComponent extends Container {
   private symbolHeight!: number;
   private symbolWidth!: number;
 
-  constructor(modifySpeed: number = 1, symbolsInReel: number = 3) {
+  constructor(
+    reelNumber: number = 0,
+    modifySpeed: number = 1,
+    symbolsInReel: number = 3,
+  ) {
     super();
+    this.reelNumber = reelNumber;
     this.modifySpeed = modifySpeed;
     this.symbolsInReel = symbolsInReel;
     this.generateSymbols(6, "ПРИВЕТЫ");
@@ -74,7 +81,14 @@ export class ReelComponent extends Container {
 
   public slow(): void {
     this.symbols.forEach((s: SymbolComponent, i: number) => {
-      if (i == 0 && s.position.y == 200) {
+      if (
+        i == this.requiredSymbol &&
+        s.position.y ==
+          (this.symbolWidth + this.padding,
+          this.symbolHeight * this.symbolsInReel -
+            this.symbolsInReel * this.padding) /
+            2
+      ) {
         this.currentState = ANIMATIONS_STATE.idle;
         this.slowlySpeed = this.defaultSpeed;
         return;
@@ -129,7 +143,8 @@ export class ReelComponent extends Container {
       this.currentState = ANIMATIONS_STATE.rotate;
     });
 
-    Emitter().addListener(StopReelsEvent.NAME, () => {
+    Emitter().addListener(StopReelsEvent.NAME, (e: StopReelsEvent) => {
+      this.requiredSymbol = e.data.requiredSymbols[this.reelNumber];
       this.currentState = ANIMATIONS_STATE.slow;
     });
   }

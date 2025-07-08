@@ -1,4 +1,11 @@
+interface IStopReelsEvent {
+  requiredSymbols: number[];
+  isWin: boolean;
+}
 export class StopReelsEvent {
   public static NAME: string = "stopReelsEvent";
-  constructor() {}
+  public data!: IStopReelsEvent;
+  constructor(data: IStopReelsEvent) {
+    this.data = data;
+  }
 }
